@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { Check, Minus, Plus, ShoppingBasket, X } from 'lucide-react'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { Check, Minus, PiggyBank, Plus, ShoppingBasket, X } from 'lucide-react'
 
 import { ScreenHeader } from '../../components/screen-header'
 import {
@@ -11,7 +11,9 @@ import {
   useSetItemQuantity,
   useStoreComparison,
 } from '../../lib/basket'
+import { savingsFromComparison } from '../../lib/comparison'
 import { formatRand } from '../../lib/deals'
+import { useLogSavings } from '../../lib/savings'
 
 export const Route = createFileRoute('/_app/basket')({ component: BasketScreen })
 
@@ -167,9 +169,65 @@ function BasketScreen() {
                 pricing more of your basket rank first.
               </p>
             )}
+
+            {comparison && <LockInSavings comparison={comparison} basketId={basket?.id} />}
           </>
         )}
       </div>
+    </div>
+  )
+}
+
+// The savings tracker's entry point: shopping the winning store logs a
+// savings event (vs. the average across comparable stores — Master Doc §7).
+function LockInSavings({
+  comparison,
+  basketId,
+}: {
+  comparison: NonNullable<ReturnType<typeof useStoreComparison>['data']>
+  basketId?: string
+}) {
+  const logSavings = useLogSavings(basketId)
+  const saving = savingsFromComparison(comparison)
+
+  if (!saving) return null
+
+  if (logSavings.isSuccess) {
+    return (
+      <div className="mt-4 rounded-2xl bg-brand-soft p-4 text-center">
+        <p className="text-sm font-bold text-brand-dark">
+          Nice one — {formatRand(saving.amount_saved)} skarrel'd.
+        </p>
+        <Link
+          to="/savings"
+          className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand"
+        >
+          <PiggyBank size={13} />
+          See your savings
+        </Link>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mt-4 rounded-2xl border border-border bg-card p-4">
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        Shopping this basket at <strong>{saving.cheapest_retailer_name}</strong> beats
+        the average across {saving.stores_compared} stores by{' '}
+        <strong className="text-brand">{formatRand(saving.amount_saved)}</strong>.
+      </p>
+      <button
+        onClick={() => logSavings.mutate(saving)}
+        disabled={logSavings.isPending}
+        className="mt-3 w-full rounded-2xl bg-coral py-2.5 text-xs font-bold text-white disabled:opacity-60"
+      >
+        {logSavings.isPending ? 'Locking in…' : "Shopped it? Lock in your saving"}
+      </button>
+      {logSavings.isError && (
+        <p className="mt-2 text-center text-[10px] text-destructive">
+          Couldn't save that — try again.
+        </p>
+      )}
     </div>
   )
 }

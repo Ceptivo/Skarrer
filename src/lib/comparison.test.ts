@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { compareStores, normalizeName } from './comparison'
+import { compareStores, normalizeName, savingsFromComparison } from './comparison'
 
 import type { BasketItemInput, DealInput } from './comparison'
 
@@ -103,5 +103,51 @@ describe('compareStores', () => {
     )
     expect(result).toHaveLength(1)
     expect(result[0].retailer_name).toBe('Pick n Pay')
+  })
+})
+
+describe('savingsFromComparison', () => {
+  const items = [item('Milk 1L'), item('Bread 700g')]
+  const fullDeals = [
+    deal('Checkers', 'Milk 1L', 20),
+    deal('Checkers', 'Bread 700g', 15),   // total 35
+    deal('Pick n Pay', 'Milk 1L', 18),
+    deal('Pick n Pay', 'Bread 700g', 16), // total 34
+    deal('Woolworths', 'Milk 1L', 25),
+    deal('Woolworths', 'Bread 700g', 20), // total 45
+  ]
+
+  it('averages comparable stores and reports the saving', () => {
+    const saving = savingsFromComparison(compareStores(items, fullDeals))
+    expect(saving).not.toBeNull()
+    expect(saving!.cheapest_retailer_name).toBe('Pick n Pay')
+    expect(saving!.cheapest_total).toBe(34)
+    expect(saving!.average_total).toBe(38) // (35+34+45)/3
+    expect(saving!.amount_saved).toBe(4)
+    expect(saving!.stores_compared).toBe(3)
+  })
+
+  it('excludes partial-coverage stores from the average', () => {
+    const saving = savingsFromComparison(
+      compareStores(items, [...fullDeals, deal('Superspar', 'Milk 1L', 1)]),
+    )
+    // Superspar prices only 1 of 2 items — must not drag the average down.
+    expect(saving!.stores_compared).toBe(3)
+    expect(saving!.average_total).toBe(38)
+  })
+
+  it('returns null when only one store is comparable', () => {
+    const saving = savingsFromComparison(
+      compareStores(items, [
+        deal('Checkers', 'Milk 1L', 20),
+        deal('Checkers', 'Bread 700g', 15),
+        deal('Superspar', 'Milk 1L', 10),
+      ]),
+    )
+    expect(saving).toBeNull()
+  })
+
+  it('returns null for an empty comparison', () => {
+    expect(savingsFromComparison([])).toBeNull()
   })
 })

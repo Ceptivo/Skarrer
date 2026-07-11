@@ -95,3 +95,39 @@ export function compareStores(
 
   return totals
 }
+
+export interface LoggableSaving {
+  cheapest_retailer_id: string
+  cheapest_retailer_name: string
+  cheapest_total: number
+  average_total: number
+  stores_compared: number
+  amount_saved: number
+}
+
+// What a comparison is worth logging as a savings event (Master Doc §7:
+// savings measured against the AVERAGE across stores checked). Only stores
+// with equal, maximum coverage are averaged — mixing a 2-of-5 total into the
+// average of 5-of-5 totals would fabricate savings. Needs at least two
+// comparable stores, matching the savings_events check constraint.
+export function savingsFromComparison(totals: StoreTotal[]): LoggableSaving | null {
+  if (totals.length < 2) return null
+  const bestCoverage = totals[0].priced_items
+  const comparable = totals.filter((t) => t.priced_items === bestCoverage)
+  if (comparable.length < 2) return null
+
+  const cheapest = comparable.reduce((a, b) => (b.total < a.total ? b : a))
+  const average =
+    Math.round((comparable.reduce((sum, t) => sum + t.total, 0) / comparable.length) * 100) / 100
+  const saved = Math.round((average - cheapest.total) * 100) / 100
+  if (saved <= 0) return null
+
+  return {
+    cheapest_retailer_id: cheapest.retailer_id,
+    cheapest_retailer_name: cheapest.retailer_name,
+    cheapest_total: cheapest.total,
+    average_total: average,
+    stores_compared: comparable.length,
+    amount_saved: saved,
+  }
+}

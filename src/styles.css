@@ -42,6 +42,9 @@
   --chart-3: #0b5a54;
   --chart-4: #9ca3af;
   --chart-5: #ffd7c9;
+  /* Chart mark color — brand teal snapped to pass the dataviz palette
+     validator (chroma floor) against this mode's card surface. */
+  --chart-mark: #089180;
   --radius: 1rem;
 }
 
@@ -72,6 +75,7 @@
   --border: #263531;
   --input: #263531;
   --ring: #14b8a6;
+  --chart-mark: #0ea795;
 }
 
 @theme inline {
@@ -104,6 +108,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-chart-mark: var(--chart-mark);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
