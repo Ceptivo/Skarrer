@@ -48,6 +48,9 @@ legal constraints (POPIA/CPA), and brand voice.
 - [x] Chunk 5 — Savings tracker (lock-in card on basket comparison logs
       events vs. comparable-store average; Savings screen has month figure,
       YTD, 6-month chart. savings_events are insert/select-only by design)
+- [x] Chunk 5b — Mix & match (Luke's request): per-item store selection with
+      cheapest pre-selected, per-store shopping list, combined total, own
+      lock-in (multi-store events log with null cheapest_retailer_id)
 - [ ] Later — weekly graphic, crowd accuracy, HOT badge, PayFast, leaderboard…
 
 ## Known open items (from the plan, not decisions to make silently)

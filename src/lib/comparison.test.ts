@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
-import { compareStores, normalizeName, savingsFromComparison } from './comparison'
+import {
+  compareStores,
+  mixSummary,
+  normalizeName,
+  savingsFromComparison,
+  splitComparison,
+} from './comparison'
 
 import type { BasketItemInput, DealInput } from './comparison'
 
@@ -149,5 +155,76 @@ describe('savingsFromComparison', () => {
 
   it('returns null for an empty comparison', () => {
     expect(savingsFromComparison([])).toBeNull()
+  })
+})
+
+describe('splitComparison / mixSummary', () => {
+  const items = [item('Milk 1L', 2), item('Bread 700g'), item('Biltong 200g')]
+  const deals = [
+    deal('Checkers', 'Milk 1L', 20),
+    deal('Checkers', 'Bread 700g', 15),
+    deal('Pick n Pay', 'Milk 1L', 18),
+    deal('Pick n Pay', 'Bread 700g', 16),
+    // nobody prices biltong
+  ]
+
+  it('lists per-item store options cheapest-first with averages', () => {
+    const split = splitComparison(items, deals)
+    expect(split[0].options.map((o) => o.retailer_name)).toEqual(['Pick n Pay', 'Checkers'])
+    expect(split[0].average_price).toBe(19)
+    expect(split[2].options).toEqual([])
+  })
+
+  it('keeps the best price per store when duplicates exist', () => {
+    const split = splitComparison(
+      [item('Milk 1L')],
+      [deal('Checkers', 'Milk 1L', 22), deal('Checkers', 'Milk 1L', 19)],
+    )
+    expect(split[0].options).toHaveLength(1)
+    expect(split[0].options[0].price).toBe(19)
+  })
+
+  it('defaults every item to its cheapest store', () => {
+    const summary = mixSummary(splitComparison(items, deals), {})
+    // milk x2 @ PnP 18, bread @ Checkers 15 → 51; avg 19*2 + 15.5 = 53.5
+    expect(summary.total).toBe(51)
+    expect(summary.average_total).toBe(53.5)
+    expect(summary.amount_saved).toBe(2.5)
+    expect(summary.groups).toHaveLength(2)
+    expect(summary.loggable?.cheapest_retailer_id).toBeNull() // multi-store mix
+    expect(summary.loggable?.stores_compared).toBe(2)
+  })
+
+  it('honours a manual store selection', () => {
+    const split = splitComparison(items, deals)
+    const milkId = split[0].item_id
+    const checkers = split[0].options.find((o) => o.retailer_name === 'Checkers')!
+    const summary = mixSummary(split, { [milkId]: checkers.retailer_id })
+    // milk x2 @ Checkers 20, bread @ Checkers 15 → 55, single store
+    expect(summary.total).toBe(55)
+    expect(summary.groups).toHaveLength(1)
+    // 55 > the 53.5 average — a costlier pick is not a loggable saving
+    expect(summary.loggable).toBeNull()
+  })
+
+  it('logs a single-store mix under that store when it still saves', () => {
+    const split = splitComparison(items, deals)
+    const breadId = split[1].item_id
+    const pnp = split[1].options.find((o) => o.retailer_name === 'Pick n Pay')!
+    // everything at PnP: milk x2 @ 18 (default) + bread @ 16 = 52 vs avg 53.5
+    const summary = mixSummary(split, { [breadId]: pnp.retailer_id })
+    expect(summary.total).toBe(52)
+    expect(summary.groups).toHaveLength(1)
+    expect(summary.loggable?.cheapest_retailer_id).toBe(pnp.retailer_id)
+    expect(summary.loggable?.amount_saved).toBe(1.5)
+  })
+
+  it('is not loggable when only one store prices anything', () => {
+    const summary = mixSummary(
+      splitComparison([item('Milk 1L')], [deal('Checkers', 'Milk 1L', 20)]),
+      {},
+    )
+    expect(summary.loggable).toBeNull()
+    expect(summary.total).toBe(20)
   })
 })

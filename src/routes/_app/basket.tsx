@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import { Check, Minus, PiggyBank, Plus, ShoppingBasket, X } from 'lucide-react'
 
@@ -6,14 +6,21 @@ import { ScreenHeader } from '../../components/screen-header'
 import {
   useAddBasketItem,
   useBasketItems,
+  useComparisonDeals,
   useDefaultBasket,
   useProductSuggestions,
   useSetItemQuantity,
-  useStoreComparison,
 } from '../../lib/basket'
-import { savingsFromComparison } from '../../lib/comparison'
+import {
+  compareStores,
+  mixSummary,
+  savingsFromComparison,
+  splitComparison,
+} from '../../lib/comparison'
 import { formatRand } from '../../lib/deals'
 import { useLogSavings } from '../../lib/savings'
+
+import type { LoggableSaving } from '../../lib/comparison'
 
 export const Route = createFileRoute('/_app/basket')({ component: BasketScreen })
 
@@ -21,7 +28,16 @@ function BasketScreen() {
   const { data: basket } = useDefaultBasket()
   const { data: items, isPending: itemsPending } = useBasketItems(basket?.id)
   const setQuantity = useSetItemQuantity(basket?.id)
-  const { data: comparison, isPending: comparisonPending } = useStoreComparison(items)
+  const { data: deals, isPending: dealsPending } = useComparisonDeals(items)
+
+  const comparison = useMemo(
+    () => (items && deals ? compareStores(items, deals) : undefined),
+    [items, deals],
+  )
+  const split = useMemo(
+    () => (items && deals ? splitComparison(items, deals) : undefined),
+    [items, deals],
+  )
 
   const itemCount = items?.reduce((n, item) => n + item.quantity, 0) ?? 0
   const hasItems = (items?.length ?? 0) > 0
@@ -101,7 +117,7 @@ function BasketScreen() {
               CHEAPEST STORE FOR THIS BASKET
             </p>
 
-            {comparisonPending && (
+            {dealsPending && (
               <p className="pt-2 text-center text-xs text-muted-foreground">
                 Checking this week's prices…
               </p>
@@ -170,7 +186,11 @@ function BasketScreen() {
               </p>
             )}
 
-            {comparison && <LockInSavings comparison={comparison} basketId={basket?.id} />}
+            {comparison && (
+              <SingleStoreLockIn saving={savingsFromComparison(comparison)} basketId={basket?.id} />
+            )}
+
+            {split && <MixAndMatch split={split} basketId={basket?.id} />}
           </>
         )}
       </div>
@@ -178,36 +198,18 @@ function BasketScreen() {
   )
 }
 
-// The savings tracker's entry point: shopping the winning store logs a
-// savings event (vs. the average across comparable stores — Master Doc §7).
-function LockInSavings({
-  comparison,
+// Lock-in for shopping the whole basket at the winning store.
+function SingleStoreLockIn({
+  saving,
   basketId,
 }: {
-  comparison: NonNullable<ReturnType<typeof useStoreComparison>['data']>
+  saving: LoggableSaving | null
   basketId?: string
 }) {
   const logSavings = useLogSavings(basketId)
-  const saving = savingsFromComparison(comparison)
-
   if (!saving) return null
 
-  if (logSavings.isSuccess) {
-    return (
-      <div className="mt-4 rounded-2xl bg-brand-soft p-4 text-center">
-        <p className="text-sm font-bold text-brand-dark">
-          Nice one — {formatRand(saving.amount_saved)} skarrel'd.
-        </p>
-        <Link
-          to="/savings"
-          className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand"
-        >
-          <PiggyBank size={13} />
-          See your savings
-        </Link>
-      </div>
-    )
-  }
+  if (logSavings.isSuccess) return <LockInSuccess amount={saving.amount_saved} />
 
   return (
     <div className="mt-4 rounded-2xl border border-border bg-card p-4">
@@ -221,13 +223,142 @@ function LockInSavings({
         disabled={logSavings.isPending}
         className="mt-3 w-full rounded-2xl bg-coral py-2.5 text-xs font-bold text-white disabled:opacity-60"
       >
-        {logSavings.isPending ? 'Locking in…' : "Shopped it? Lock in your saving"}
+        {logSavings.isPending ? 'Locking in…' : 'Shopped it? Lock in your saving'}
       </button>
       {logSavings.isError && (
         <p className="mt-2 text-center text-[10px] text-destructive">
           Couldn't save that — try again.
         </p>
       )}
+    </div>
+  )
+}
+
+// Mix & match: pick a store per item (cheapest pre-selected), get a
+// per-store shopping list, combined total and its own lock-in.
+function MixAndMatch({
+  split,
+  basketId,
+}: {
+  split: NonNullable<ReturnType<typeof splitComparison>>
+  basketId?: string
+}) {
+  const [selection, setSelection] = useState<Record<string, string>>({})
+  const logSavings = useLogSavings(basketId)
+
+  const summary = useMemo(() => mixSummary(split, selection), [split, selection])
+
+  // Only worth showing when there's a real choice to make.
+  if (summary.stores_compared < 2) return null
+
+  const priceable = split.filter((s) => s.options.length > 0)
+  const unpriced = split.filter((s) => s.options.length === 0)
+
+  return (
+    <>
+      <p className="mt-6 mb-2 px-1 text-[11px] font-semibold text-muted-foreground">
+        OR MIX &amp; MATCH ACROSS STORES
+      </p>
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
+        <div className="space-y-3">
+          {priceable.map((item) => {
+            const chosen =
+              item.options.find((o) => o.retailer_id === selection[item.item_id]) ??
+              item.options[0]
+            return (
+              <div key={item.item_id} className="flex items-center justify-between gap-3">
+                <span className="min-w-0 flex-1 truncate text-xs font-medium text-card-foreground">
+                  {item.product_name}
+                  {item.quantity > 1 && (
+                    <span className="text-muted-foreground"> ×{item.quantity}</span>
+                  )}
+                </span>
+                <select
+                  value={chosen.retailer_id}
+                  onChange={(e) =>
+                    setSelection((s) => ({ ...s, [item.item_id]: e.target.value }))
+                  }
+                  className="max-w-[170px] rounded-lg border border-input bg-background px-2 py-1.5 text-[11px] font-semibold text-foreground"
+                >
+                  {item.options.map((option) => (
+                    <option key={option.retailer_id} value={option.retailer_id}>
+                      {option.retailer_name} — {formatRand(option.price)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )
+          })}
+        </div>
+
+        {unpriced.length > 0 && (
+          <p className="mt-3 text-[10px] text-muted-foreground">
+            No specials this week for:{' '}
+            {unpriced.map((item) => item.product_name).join(', ')}
+          </p>
+        )}
+
+        <div className="mt-4 space-y-1 border-t border-border pt-3">
+          {summary.groups.map((group) => (
+            <div key={group.retailer_id} className="flex justify-between text-[11px]">
+              <span className="text-muted-foreground">
+                <strong className="text-card-foreground">{group.retailer_name}</strong>{' '}
+                · {group.items.length} item{group.items.length === 1 ? '' : 's'}
+              </span>
+              <span className="font-semibold text-card-foreground">
+                {formatRand(group.subtotal)}
+              </span>
+            </div>
+          ))}
+          <div className="flex justify-between pt-1.5 text-sm">
+            <span className="font-bold text-card-foreground">Your mix</span>
+            <span className="font-extrabold text-brand">{formatRand(summary.total)}</span>
+          </div>
+        </div>
+
+        {logSavings.isSuccess && summary.amount_saved > 0 ? (
+          <LockInSuccess amount={summary.amount_saved} />
+        ) : summary.loggable ? (
+          <>
+            <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+              This mix beats the average shop by{' '}
+              <strong className="text-brand">{formatRand(summary.amount_saved)}</strong>
+              {summary.groups.length > 1 &&
+                ` across ${summary.groups.length} stores`}
+              .
+            </p>
+            <button
+              onClick={() => logSavings.mutate(summary.loggable!)}
+              disabled={logSavings.isPending}
+              className="mt-2 w-full rounded-2xl bg-coral py-2.5 text-xs font-bold text-white disabled:opacity-60"
+            >
+              {logSavings.isPending ? 'Locking in…' : 'Shopped this mix? Lock it in'}
+            </button>
+            {logSavings.isError && (
+              <p className="mt-2 text-center text-[10px] text-destructive">
+                Couldn't save that — try again.
+              </p>
+            )}
+          </>
+        ) : null}
+      </div>
+    </>
+  )
+}
+
+function LockInSuccess({ amount }: { amount: number }) {
+  return (
+    <div className="mt-4 rounded-2xl bg-brand-soft p-4 text-center">
+      <p className="text-sm font-bold text-brand-dark">
+        Nice one — {formatRand(amount)} skarrel'd.
+      </p>
+      <Link
+        to="/savings"
+        className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-brand"
+      >
+        <PiggyBank size={13} />
+        See your savings
+      </Link>
     </div>
   )
 }

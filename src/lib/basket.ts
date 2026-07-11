@@ -1,10 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { compareStores } from './comparison'
 import { supabase } from './supabase'
 import { useAuth } from './auth'
 
-import type { StoreTotal } from './comparison'
+import type { DealInput } from './comparison'
 
 export interface BasketItem {
   id: string
@@ -124,13 +123,13 @@ export function useProductSuggestions(search: string) {
   })
 }
 
-// Store totals for the current basket, computed from this week's live deals.
-export function useStoreComparison(items?: BasketItem[]) {
-  const itemsKey = items?.map((i) => `${i.product_name}x${i.quantity}`).join('|') ?? ''
+// This week's live deals in comparison form — feeds both the single-store
+// comparison and the mix & match view (computed in the component).
+export function useComparisonDeals(items?: BasketItem[]) {
   return useQuery({
-    queryKey: ['store-comparison', itemsKey],
+    queryKey: ['comparison-deals'],
     enabled: Boolean(items && items.length > 0),
-    queryFn: async (): Promise<StoreTotal[]> => {
+    queryFn: async (): Promise<DealInput[]> => {
       const today = new Date().toISOString().slice(0, 10)
       const { data: deals, error } = await supabase
         .from('deals')
@@ -139,22 +138,19 @@ export function useStoreComparison(items?: BasketItem[]) {
         .gte('expires_at', today)
       if (error) throw error
 
-      return compareStores(
-        items!,
-        (deals ?? []).flatMap((deal) => {
-          const retailer = deal.retailer as unknown as { id: string; name: string } | null
-          if (!retailer) return []
-          return [
-            {
-              retailer_id: retailer.id,
-              retailer_name: retailer.name,
-              product_id: deal.product_id,
-              product_name: deal.product_name,
-              price: deal.price,
-            },
-          ]
-        }),
-      )
+      return (deals ?? []).flatMap((deal) => {
+        const retailer = deal.retailer as unknown as { id: string; name: string } | null
+        if (!retailer) return []
+        return [
+          {
+            retailer_id: retailer.id,
+            retailer_name: retailer.name,
+            product_id: deal.product_id,
+            product_name: deal.product_name,
+            price: deal.price,
+          },
+        ]
+      })
     },
   })
 }

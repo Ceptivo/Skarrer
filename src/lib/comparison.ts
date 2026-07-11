@@ -97,7 +97,8 @@ export function compareStores(
 }
 
 export interface LoggableSaving {
-  cheapest_retailer_id: string
+  // null when the saving comes from a mix across several stores
+  cheapest_retailer_id: string | null
   cheapest_retailer_name: string
   cheapest_total: number
   average_total: number
@@ -129,5 +130,144 @@ export function savingsFromComparison(totals: StoreTotal[]): LoggableSaving | nu
     average_total: average,
     stores_compared: comparable.length,
     amount_saved: saved,
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Mix & match: shop different items at different stores.
+// ---------------------------------------------------------------------------
+
+export interface ItemStoreOption {
+  retailer_id: string
+  retailer_name: string
+  price: number
+}
+
+export interface SplitItem {
+  item_id: string
+  product_name: string
+  quantity: number
+  // Stores pricing this item, cheapest first (best price per store).
+  options: ItemStoreOption[]
+  // Average of the option prices — the per-item baseline a choice is
+  // measured against (Master Doc §7: savings vs. average across stores).
+  average_price: number
+}
+
+// Per-item store options for the basket. Items nobody prices come back with
+// empty options so the UI can say so.
+export function splitComparison(items: BasketItemInput[], deals: DealInput[]): SplitItem[] {
+  return items.map((item) => {
+    const itemName = normalizeName(item.product_name)
+    const bestPerStore = new Map<string, ItemStoreOption>()
+    for (const deal of deals) {
+      const matches =
+        (item.product_id && deal.product_id === item.product_id) ||
+        normalizeName(deal.product_name) === itemName
+      if (!matches) continue
+      const current = bestPerStore.get(deal.retailer_id)
+      if (!current || deal.price < current.price) {
+        bestPerStore.set(deal.retailer_id, {
+          retailer_id: deal.retailer_id,
+          retailer_name: deal.retailer_name,
+          price: deal.price,
+        })
+      }
+    }
+    const options = [...bestPerStore.values()].sort((a, b) => a.price - b.price)
+    const average_price =
+      options.length > 0
+        ? Math.round((options.reduce((s, o) => s + o.price, 0) / options.length) * 100) / 100
+        : 0
+    return {
+      item_id: item.id,
+      product_name: item.product_name,
+      quantity: item.quantity,
+      options,
+      average_price,
+    }
+  })
+}
+
+export interface MixGroup {
+  retailer_id: string
+  retailer_name: string
+  items: Array<{ product_name: string; quantity: number; price: number }>
+  subtotal: number
+}
+
+export interface MixSummary {
+  groups: MixGroup[]
+  total: number
+  average_total: number
+  amount_saved: number
+  stores_compared: number
+  loggable: LoggableSaving | null
+}
+
+// selection maps item_id -> retailer_id; unpriced items and missing entries
+// fall back to the cheapest option.
+export function mixSummary(
+  splitItems: SplitItem[],
+  selection: Record<string, string>,
+): MixSummary {
+  const groups = new Map<string, MixGroup>()
+  let total = 0
+  let averageTotal = 0
+  const allStores = new Set<string>()
+
+  for (const item of splitItems) {
+    for (const option of item.options) allStores.add(option.retailer_id)
+    if (item.options.length === 0) continue
+    const chosen =
+      item.options.find((o) => o.retailer_id === selection[item.item_id]) ?? item.options[0]
+
+    const group = groups.get(chosen.retailer_id) ?? {
+      retailer_id: chosen.retailer_id,
+      retailer_name: chosen.retailer_name,
+      items: [],
+      subtotal: 0,
+    }
+    group.items.push({
+      product_name: item.product_name,
+      quantity: item.quantity,
+      price: chosen.price,
+    })
+    group.subtotal = Math.round((group.subtotal + chosen.price * item.quantity) * 100) / 100
+    groups.set(chosen.retailer_id, group)
+
+    total += chosen.price * item.quantity
+    averageTotal += item.average_price * item.quantity
+  }
+
+  total = Math.round(total * 100) / 100
+  averageTotal = Math.round(averageTotal * 100) / 100
+  const saved = Math.round((averageTotal - total) * 100) / 100
+  const groupList = [...groups.values()].sort((a, b) => b.subtotal - a.subtotal)
+
+  // A saving needs a real comparison behind it: at least two stores pricing
+  // things overall (matches the savings_events stores_compared >= 2 check).
+  const loggable: LoggableSaving | null =
+    allStores.size >= 2 && saved > 0 && groupList.length > 0
+      ? {
+          cheapest_retailer_id: groupList.length === 1 ? groupList[0].retailer_id : null,
+          cheapest_retailer_name:
+            groupList.length === 1
+              ? groupList[0].retailer_name
+              : `${groupList.length} stores`,
+          cheapest_total: total,
+          average_total: averageTotal,
+          stores_compared: allStores.size,
+          amount_saved: saved,
+        }
+      : null
+
+  return {
+    groups: groupList,
+    total,
+    average_total: averageTotal,
+    amount_saved: saved,
+    stores_compared: allStores.size,
+    loggable,
   }
 }
