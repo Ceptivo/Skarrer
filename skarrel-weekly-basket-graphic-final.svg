@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1270" font-family="'Century Gothic','Poppins','Segoe UI',sans-serif">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#0f766e"/>
+    <stop offset="100%" stop-color="#0b5a54"/>
+  </linearGradient>
+</defs>
+<rect width="1080" height="1270" fill="url(#bg)"/>
+
+
+<rect x="60" y="56" width="72" height="72" rx="20" fill="#ffffff"/>
+<text x="96" y="108" font-size="38" font-weight="800" text-anchor="middle" letter-spacing="-2">
+  <tspan fill="#0f766e">s</tspan><tspan fill="#ff7a59">k</tspan>
+</text>
+<text x="144" y="98" font-size="28" font-weight="800" fill="#ffffff" letter-spacing="-1">Ska<tspan fill="#ff7a59">rr</tspan>el</text>
+<rect x="856" y="66" width="164" height="40" rx="20" fill="rgba(255,255,255,0.15)"/>
+<text x="938" y="92" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">14–20 JUL</text>
+
+
+<text x="60" y="190" font-size="22" font-weight="700" fill="#ffd7c9" letter-spacing="2">CHEAPEST BASKET THIS WEEK</text>
+<text x="60" y="238" font-size="42" font-weight="800" fill="#ffffff" letter-spacing="-1">Westville &amp; Pinetown</text>
+
+<rect x="60" y="300" width="960" height="694" rx="26" fill="#ffffff"/>
+<rect x="60" y="300" width="960" height="100" rx="26" fill="#0f766e"/>
+<rect x="60" y="374" width="960" height="26" fill="#0f766e"/>
+<text x="88" y="356.0" font-size="17" font-weight="800" fill="#ffffff">ITEM</text>
+<text x="426" y="356.0" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">Checkers</text>
+<text x="558" y="356.0" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">Pick n Pay</text>
+<text x="690" y="356.0" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">Superspar</text>
+<text x="822" y="356.0" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">Woolies</text>
+<text x="954" y="356.0" font-size="15" font-weight="800" fill="#ffffff" text-anchor="middle">OK Foods</text>
+<text x="88" y="442" font-size="18" font-weight="700" fill="#111827">Full Cream Milk 1L</text>
+<rect x="380" y="417" width="92" height="38" rx="19" fill="#fff0eb"/>
+<text x="426" y="442" font-size="18" font-weight="800" fill="#ff7a59" text-anchor="middle">R18.99</text>
+<text x="558" y="442" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R21.99</text>
+<text x="690" y="442" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R20.50</text>
+<text x="822" y="442" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R23.99</text>
+<text x="954" y="442" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R22.00</text>
+<line x1="88" y1="472" x2="992" y2="472" stroke="#f0f0ee" stroke-width="1.5"/>
+<rect x="60" y="472" width="960" height="72" fill="#f9f9f7"/>
+<text x="88" y="514" font-size="18" font-weight="700" fill="#111827">White Bread 700g</text>
+<text x="426" y="514" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R16.99</text>
+<rect x="512" y="489" width="92" height="38" rx="19" fill="#fff0eb"/>
+<text x="558" y="514" font-size="18" font-weight="800" fill="#ff7a59" text-anchor="middle">R14.49</text>
+<text x="690" y="514" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R17.50</text>
+<text x="822" y="514" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R18.99</text>
+<text x="954" y="514" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R16.50</text>
+<line x1="88" y1="544" x2="992" y2="544" stroke="#f0f0ee" stroke-width="1.5"/>
+<text x="88" y="586" font-size="18" font-weight="700" fill="#111827">Rice 2kg</text>
+<text x="426" y="586" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R38.99</text>
+<text x="558" y="586" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R37.50</text>
+<rect x="644" y="561" width="92" height="38" rx="19" fill="#fff0eb"/>
+<text x="690" y="586" font-size="18" font-weight="800" fill="#ff7a59" text-anchor="middle">R32.99</text>
+<text x="822" y="586" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R41.99</text>
+<text x="954" y="586" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R36.00</text>
+<line x1="88" y1="616" x2="992" y2="616" stroke="#f0f0ee" stroke-width="1.5"/>
+<rect x="60" y="616" width="960" height="72" fill="#f9f9f7"/>
+<text x="88" y="658" font-size="18" font-weight="700" fill="#111827">Maize Meal 5kg</text>
+<rect x="380" y="633" width="92" height="38" rx="19" fill="#fff0eb"/>
+<text x="426" y="658" font-size="18" font-weight="800" fill="#ff7a59" text-anchor="middle">R54.99</text>
+<text x="558" y="658" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R57.99</text>
+<text x="690" y="658" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R56.50</text>
+<text x="822" y="658" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R59.99</text>
+<text x="954" y="658" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R58.00</text>
+<line x1="88" y1="688" x2="992" y2="688" stroke="#f0f0ee" stroke-width="1.5"/>
+<text x="88" y="730" font-size="18" font-weight="700" fill="#111827">White Sugar 2kg</text>
+<text x="426" y="730" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R44.99</text>
+<rect x="512" y="705" width="92" height="38" rx="19" fill="#fff0eb"/>
+<text x="558" y="730" font-size="18" font-weight="800" fill="#ff7a59" text-anchor="middle">R41.99</text>
+<text x="690" y="730" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R43.50</text>
+<text x="822" y="730" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R45.99</text>
+<text x="954" y="730" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R44.00</text>
+<line x1="88" y1="760" x2="992" y2="760" stroke="#f0f0ee" stroke-width="1.5"/>
+<rect x="60" y="760" width="960" height="72" fill="#f9f9f7"/>
+<text x="88" y="802" font-size="18" font-weight="700" fill="#111827">Free Range Eggs 18s</text>
+<text x="426" y="802" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R44.99</text>
+<text x="558" y="802" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R43.99</text>
+<text x="690" y="802" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R46.50</text>
+<rect x="776" y="777" width="92" height="38" rx="19" fill="#fff0eb"/>
+<text x="822" y="802" font-size="18" font-weight="800" fill="#ff7a59" text-anchor="middle">R42.99</text>
+<text x="954" y="802" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R45.00</text>
+<line x1="88" y1="832" x2="992" y2="832" stroke="#f0f0ee" stroke-width="1.5"/>
+<text x="88" y="874" font-size="18" font-weight="700" fill="#111827">Beef Mince 500g</text>
+<rect x="380" y="849" width="92" height="38" rx="19" fill="#fff0eb"/>
+<text x="426" y="874" font-size="18" font-weight="800" fill="#ff7a59" text-anchor="middle">R54.99</text>
+<text x="558" y="874" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R62.99</text>
+<text x="690" y="874" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R58.50</text>
+<text x="822" y="874" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R64.99</text>
+<text x="954" y="874" font-size="16" font-weight="600" fill="#9ca3af" text-anchor="middle">R60.00</text>
+<rect x="60" y="904" width="960" height="90" rx="0" fill="#0b5a54"/>
+<rect x="60" y="968" width="960" height="26" rx="26" fill="#0b5a54"/>
+<text x="88" y="956" font-size="21" font-weight="800" fill="#ffffff">BASKET TOTAL</text>
+<rect x="367" y="927" width="118" height="44" rx="22" fill="#ff7a59"/>
+<text x="426" y="956" font-size="21" font-weight="800" fill="#ffffff" text-anchor="middle">R274.93</text>
+<text x="558" y="956" font-size="18" font-weight="700" fill="rgba(255,255,255,0.55)" text-anchor="middle">R280.94</text>
+<text x="690" y="956" font-size="18" font-weight="700" fill="rgba(255,255,255,0.55)" text-anchor="middle">R275.99</text>
+<text x="822" y="956" font-size="18" font-weight="700" fill="rgba(255,255,255,0.55)" text-anchor="middle">R298.93</text>
+<text x="954" y="956" font-size="18" font-weight="700" fill="rgba(255,255,255,0.55)" text-anchor="middle">R281.50</text>
+
+<circle cx="68" cy="1035" r="7" fill="#4ade80"/>
+<text x="86" y="1040" font-size="16" font-weight="600" fill="rgba(255,255,255,0.85)">Verified accurate by 94% of Skarrel users this week</text>
+
+<line x1="60" y1="1080" x2="1020" y2="1080" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+<text x="60" y="1130" font-size="28" font-weight="800" fill="#ffffff">Ska<tspan fill="#ff7a59">rr</tspan>el smart. Save more.</text>
+<text x="60" y="1164" font-size="18" fill="rgba(255,255,255,0.6)">Download the app · skarrel.co.za</text>
+</svg>

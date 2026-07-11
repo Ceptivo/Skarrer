@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" font-family="'Poppins','Segoe UI',sans-serif">
+  <rect width="400" height="400" fill="#f5f6f7"/>
+
+  <!-- App icon -->
+  <rect x="60" y="60" width="280" height="280" rx="72" fill="#ffffff" stroke="#e5e7eb" stroke-width="2"/>
+  <text x="200" y="248" font-size="150" font-weight="800" text-anchor="middle" letter-spacing="-6">
+    <tspan fill="#0f766e">s</tspan><tspan fill="#ff7a59">k</tspan>
+  </text>
+
+  <text x="200" y="365" font-size="16" fill="#6b7280" text-anchor="middle">Skarrel App Icon — Final</text>
+</svg>
