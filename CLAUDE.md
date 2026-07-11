@@ -45,7 +45,9 @@ legal constraints (POPIA/CPA), and brand voice.
 - [x] Chunk 4 — Basket + cheapest-store comparison (single default basket;
       comparison logic in src/lib/comparison.ts is pure + unit-tested;
       stores ranked by coverage then total. Multi-list UI still to come)
-- [ ] Chunk 5 — Savings tracker (events, monthly chart, YTD)
+- [x] Chunk 5 — Savings tracker (lock-in card on basket comparison logs
+      events vs. comparable-store average; Savings screen has month figure,
+      YTD, 6-month chart. savings_events are insert/select-only by design)
 - [ ] Later — weekly graphic, crowd accuracy, HOT badge, PayFast, leaderboard…
 
 ## Known open items (from the plan, not decisions to make silently)
