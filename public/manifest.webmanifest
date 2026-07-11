@@ -1,0 +1,17 @@
+{
+  "name": "Skarrel",
+  "short_name": "Skarrel",
+  "description": "Hyper-local grocery deals and savings for Westville, Pinetown and the Upper Highway, Durban. Skarrel smart. Save more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f5f2",
+  "theme_color": "#0f766e",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

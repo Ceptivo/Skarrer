@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Skarrel brand (Master Document §6):
+ * teal #0F766E + coral #FF7A59, bold rounded type, clean and professional.
+ */
+:root {
+  --brand: #0f766e;
+  --brand-dark: #0b5a54;
+  --coral: #ff7a59;
+  --coral-soft: #fff0eb;
+  --brand-soft: #e6f4f2;
+  --cream: #f6f5f2;
+
+  --background: #f6f5f2;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+  --secondary: #e6f4f2;
+  --secondary-foreground: #0b5a54;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #fff0eb;
+  --accent-foreground: #ff7a59;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #0f766e;
+  --chart-1: #0f766e;
+  --chart-2: #ff7a59;
+  --chart-3: #0b5a54;
+  --chart-4: #9ca3af;
+  --chart-5: #ffd7c9;
+  --radius: 1rem;
+}
+
+.dark {
+  --brand: #14b8a6;
+  --brand-dark: #0f766e;
+  --coral: #ff8f73;
+  --coral-soft: #3a231c;
+  --brand-soft: #123f3a;
+  --cream: #0e1513;
+
+  --background: #0e1513;
+  --foreground: #f0f4f3;
+  --card: #16201d;
+  --card-foreground: #f0f4f3;
+  --popover: #16201d;
+  --popover-foreground: #f0f4f3;
+  --primary: #14b8a6;
+  --primary-foreground: #06211e;
+  --secondary: #123f3a;
+  --secondary-foreground: #a7e5dd;
+  --muted: #1c2825;
+  --muted-foreground: #94a3a0;
+  --accent: #3a231c;
+  --accent-foreground: #ff8f73;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #263531;
+  --input: #263531;
+  --ring: #14b8a6;
+}
+
+@theme inline {
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand tokens: bg-brand, text-coral, bg-coral-soft, etc. */
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-soft: var(--brand-soft);
+  --color-coral: var(--coral);
+  --color-coral-soft: var(--coral-soft);
+  --color-cream: var(--cream);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
