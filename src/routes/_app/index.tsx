@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ChevronDown } from 'lucide-react'
 
-import { Logo } from '../components/logo'
+import { Logo } from '../../components/logo'
 
-export const Route = createFileRoute('/')({ component: DealsScreen })
+export const Route = createFileRoute('/_app/')({ component: DealsScreen })
 
 // Category chips come from the categories table once deals are wired up.
 const placeholderCategories = ['All', 'Dairy', 'Bakery', 'Meat', 'Pantry', 'Produce']

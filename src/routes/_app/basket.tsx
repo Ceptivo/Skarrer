@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ShoppingBasket } from 'lucide-react'
 
-import { ScreenHeader } from '../components/screen-header'
+import { ScreenHeader } from '../../components/screen-header'
 
-export const Route = createFileRoute('/basket')({ component: BasketScreen })
+export const Route = createFileRoute('/_app/basket')({ component: BasketScreen })
 
 function BasketScreen() {
   return (

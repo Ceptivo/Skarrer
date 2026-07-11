@@ -35,7 +35,9 @@ legal constraints (POPIA/CPA), and brand voice.
 ## Stage status
 
 - [x] Chunk 1 — Foundation: scaffold, brand shell, schema, seed, PWA manifest
-- [ ] Chunk 2 — Auth + profiles (Supabase Auth, RLS live end-to-end)
+- [x] Chunk 2 — Auth + profiles (email/password, auth gate, Account screen;
+      awaiting Luke's live Supabase project for a real end-to-end pass.
+      2FA enforcement still an open product decision)
 - [ ] Chunk 3 — Admin deal posting (+ duplicate check) & real deal feed
 - [ ] Chunk 4 — Basket + cheapest-store comparison
 - [ ] Chunk 5 — Savings tracker (events, monthly chart, YTD)

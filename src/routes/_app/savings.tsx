@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ScreenHeader } from '../components/screen-header'
+import { ScreenHeader } from '../../components/screen-header'
 
-export const Route = createFileRoute('/savings')({ component: SavingsScreen })
+export const Route = createFileRoute('/_app/savings')({ component: SavingsScreen })
 
 function SavingsScreen() {
   return (

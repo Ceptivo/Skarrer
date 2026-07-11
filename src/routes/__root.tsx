@@ -8,7 +8,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-import { TabNav } from '../components/tab-nav'
+import { AuthProvider } from '../lib/auth'
 
 import appCss from '../styles.css?url'
 
@@ -45,15 +45,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   shellComponent: RootDocument,
 })
 
-// Mobile-first shell: single column with the bottom tab bar, per the mockup.
+// Mobile-first shell: single phone-width column, per the mockup. The bottom
+// tab bar lives in the _app layout so the login screen renders without it.
 function AppLayout() {
   return (
-    <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-background shadow-xl">
-      <main className="flex-1 overflow-y-auto">
+    <AuthProvider>
+      <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-background shadow-xl">
         <Outlet />
-      </main>
-      <TabNav />
-    </div>
+      </div>
+    </AuthProvider>
   )
 }
 

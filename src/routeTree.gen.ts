@@ -9,104 +9,152 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SavingsRouteImport } from './routes/savings'
-import { Route as BasketRouteImport } from './routes/basket'
-import { Route as AccountRouteImport } from './routes/account'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppSavingsRouteImport } from './routes/_app/savings'
+import { Route as AppBasketRouteImport } from './routes/_app/basket'
+import { Route as AppAccountRouteImport } from './routes/_app/account'
 
-const SavingsRoute = SavingsRouteImport.update({
-  id: '/savings',
-  path: '/savings',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BasketRoute = BasketRouteImport.update({
-  id: '/basket',
-  path: '/basket',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSavingsRoute = AppSavingsRouteImport.update({
+  id: '/savings',
+  path: '/savings',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppBasketRoute = AppBasketRouteImport.update({
+  id: '/basket',
+  path: '/basket',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAccountRoute = AppAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/basket': typeof BasketRoute
-  '/savings': typeof SavingsRoute
+  '/': typeof AppIndexRoute
+  '/login': typeof LoginRoute
+  '/account': typeof AppAccountRoute
+  '/basket': typeof AppBasketRoute
+  '/savings': typeof AppSavingsRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/basket': typeof BasketRoute
-  '/savings': typeof SavingsRoute
+  '/login': typeof LoginRoute
+  '/account': typeof AppAccountRoute
+  '/basket': typeof AppBasketRoute
+  '/savings': typeof AppSavingsRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/account': typeof AccountRoute
-  '/basket': typeof BasketRoute
-  '/savings': typeof SavingsRoute
+  '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_app/account': typeof AppAccountRoute
+  '/_app/basket': typeof AppBasketRoute
+  '/_app/savings': typeof AppSavingsRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/account' | '/basket' | '/savings'
+  fullPaths: '/' | '/login' | '/account' | '/basket' | '/savings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/basket' | '/savings'
-  id: '__root__' | '/' | '/account' | '/basket' | '/savings'
+  to: '/login' | '/account' | '/basket' | '/savings' | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/login'
+    | '/_app/account'
+    | '/_app/basket'
+    | '/_app/savings'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRoute
-  BasketRoute: typeof BasketRoute
-  SavingsRoute: typeof SavingsRoute
+  AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/savings': {
-      id: '/savings'
-      path: '/savings'
-      fullPath: '/savings'
-      preLoaderRoute: typeof SavingsRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/basket': {
-      id: '/basket'
-      path: '/basket'
-      fullPath: '/basket'
-      preLoaderRoute: typeof BasketRouteImport
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/savings': {
+      id: '/_app/savings'
+      path: '/savings'
+      fullPath: '/savings'
+      preLoaderRoute: typeof AppSavingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/basket': {
+      id: '/_app/basket'
+      path: '/basket'
+      fullPath: '/basket'
+      preLoaderRoute: typeof AppBasketRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/account': {
+      id: '/_app/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AppAccountRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppAccountRoute: typeof AppAccountRoute
+  AppBasketRoute: typeof AppBasketRoute
+  AppSavingsRoute: typeof AppSavingsRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAccountRoute: AppAccountRoute,
+  AppBasketRoute: AppBasketRoute,
+  AppSavingsRoute: AppSavingsRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AccountRoute: AccountRoute,
-  BasketRoute: BasketRoute,
-  SavingsRoute: SavingsRoute,
+  AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

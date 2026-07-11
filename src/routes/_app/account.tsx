@@ -1,0 +1,145 @@
+import { useState } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
+import { Check, LogOut, Pencil, User } from 'lucide-react'
+
+import { ScreenHeader } from '../../components/screen-header'
+import { useAuth } from '../../lib/auth'
+import { useProfile, useUpdateProfile } from '../../lib/profile'
+import { supabase } from '../../lib/supabase'
+import { LANGUAGE_LABELS, SUBURB_LABELS } from '../../lib/types'
+
+import type { Language, Suburb } from '../../lib/types'
+
+export const Route = createFileRoute('/_app/account')({ component: AccountScreen })
+
+// Placeholder entries; each becomes functional in its own build chunk.
+const comingSoon = [
+  'Compare Free vs Premium',
+  'Leave a tip',
+  'Leaderboard settings',
+  'Dark mode',
+  'Suggest a feature',
+  'Delete my data',
+  "What's new (changelog)",
+]
+
+function AccountScreen() {
+  const { session } = useAuth()
+  const { data: profile, isPending } = useProfile()
+  const updateProfile = useUpdateProfile()
+
+  const [editingNickname, setEditingNickname] = useState(false)
+  const [nicknameDraft, setNicknameDraft] = useState('')
+
+  function saveNickname() {
+    const nickname = nicknameDraft.trim()
+    if (nickname && nickname !== profile?.nickname) {
+      updateProfile.mutate({ nickname })
+    }
+    setEditingNickname(false)
+  }
+
+  return (
+    <div className="flex min-h-full flex-col">
+      <ScreenHeader
+        title=""
+        top={
+          <div className="flex items-center gap-3 pb-1">
+            <div className="flex size-12 items-center justify-center rounded-full bg-white/20">
+              <User size={22} className="text-white" />
+            </div>
+            <div className="min-w-0 flex-1">
+              {editingNickname ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    autoFocus
+                    value={nicknameDraft}
+                    onChange={(e) => setNicknameDraft(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && saveNickname()}
+                    maxLength={30}
+                    className="w-full rounded-lg bg-white/20 px-2 py-1 text-base font-bold text-white outline-none placeholder:text-white/50"
+                  />
+                  <button onClick={saveNickname} aria-label="Save nickname">
+                    <Check size={18} className="text-white" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className="flex items-center gap-1.5"
+                  onClick={() => {
+                    setNicknameDraft(profile?.nickname ?? '')
+                    setEditingNickname(true)
+                  }}
+                >
+                  <span className="truncate text-base font-bold text-white">
+                    {isPending ? '…' : (profile?.nickname ?? 'skarreler')}
+                  </span>
+                  <Pencil size={13} className="shrink-0 text-white/60" />
+                </button>
+              )}
+              <p className="truncate text-[11px] text-white/70">{session?.user.email}</p>
+            </div>
+            <span className="shrink-0 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold uppercase text-white">
+              {profile?.plan ?? 'free'} plan
+            </span>
+          </div>
+        }
+      />
+
+      <div className="space-y-2.5 px-4 pt-4 pb-6">
+        <label className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
+          <span className="text-sm font-semibold text-card-foreground">Home suburb</span>
+          <select
+            value={profile?.home_suburb ?? ''}
+            onChange={(e) =>
+              updateProfile.mutate({
+                home_suburb: (e.target.value || null) as Suburb | null,
+              })
+            }
+            className="rounded-lg border border-input bg-background px-2 py-1.5 text-xs font-semibold text-foreground"
+          >
+            <option value="">Not set</option>
+            {Object.entries(SUBURB_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
+          <span className="text-sm font-semibold text-card-foreground">Language</span>
+          <select
+            value={profile?.language ?? 'en'}
+            onChange={(e) => updateProfile.mutate({ language: e.target.value as Language })}
+            className="rounded-lg border border-input bg-background px-2 py-1.5 text-xs font-semibold text-foreground"
+          >
+            {Object.entries(LANGUAGE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {comingSoon.map((label) => (
+          <div
+            key={label}
+            className="flex items-center justify-between rounded-2xl border border-border bg-card p-4 text-sm font-semibold text-card-foreground opacity-60"
+          >
+            {label}
+            <span className="text-[10px] font-bold text-muted-foreground">SOON</span>
+          </div>
+        ))}
+
+        <button
+          onClick={() => supabase.auth.signOut()}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card p-4 text-sm font-bold text-coral"
+        >
+          <LogOut size={16} />
+          Sign out
+        </button>
+      </div>
+    </div>
+  )
+}
