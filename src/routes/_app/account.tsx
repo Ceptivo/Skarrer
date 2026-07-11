@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { Check, LogOut, Pencil, User } from 'lucide-react'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { Check, ChevronRight, LogOut, Megaphone, Pencil, User } from 'lucide-react'
 
 import { ScreenHeader } from '../../components/screen-header'
 import { useAuth } from '../../lib/auth'
@@ -87,6 +87,21 @@ function AccountScreen() {
       />
 
       <div className="space-y-2.5 px-4 pt-4 pb-6">
+        {profile?.is_admin && (
+          <Link
+            to="/admin"
+            className="flex items-center justify-between rounded-2xl border-2 border-brand bg-card p-4"
+          >
+            <span className="flex items-center gap-2.5 text-sm font-bold text-brand-dark">
+              <span className="rounded-full bg-brand-soft p-2">
+                <Megaphone size={16} className="text-brand" />
+              </span>
+              Post a deal
+            </span>
+            <ChevronRight size={16} className="text-muted-foreground" />
+          </Link>
+        )}
+
         <label className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
           <span className="text-sm font-semibold text-card-foreground">Home suburb</span>
           <select

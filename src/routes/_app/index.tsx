@@ -1,14 +1,20 @@
+import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Search } from 'lucide-react'
 
+import { DealCard } from '../../components/deal-card'
 import { Logo } from '../../components/logo'
+import { useActiveDeals, useCategories } from '../../lib/deals'
 
 export const Route = createFileRoute('/_app/')({ component: DealsScreen })
 
-// Category chips come from the categories table once deals are wired up.
-const placeholderCategories = ['All', 'Dairy', 'Bakery', 'Meat', 'Pantry', 'Produce']
-
 function DealsScreen() {
+  const [categoryId, setCategoryId] = useState<string | undefined>(undefined)
+  const [search, setSearch] = useState('')
+
+  const { data: categories } = useCategories()
+  const { data: deals, isPending, error } = useActiveDeals({ categoryId, search })
+
   return (
     <div className="flex min-h-full flex-col">
       <header className="bg-brand px-4 pt-5 pb-4">
@@ -20,33 +26,81 @@ function DealsScreen() {
           </button>
         </div>
         <p className="text-lg font-extrabold text-white">This week's deals</p>
+        <div className="mt-3 flex items-center gap-2 rounded-2xl bg-white/15 px-3 py-2">
+          <Search size={14} className="text-white/70" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search deals…"
+            className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/60"
+          />
+        </div>
       </header>
 
       <div className="flex gap-2 overflow-x-auto px-4 py-3">
-        {placeholderCategories.map((category, i) => (
-          <span
-            key={category}
-            className={
-              i === 0
-                ? 'flex-shrink-0 rounded-full bg-brand px-3.5 py-1.5 text-xs font-semibold text-white'
-                : 'flex-shrink-0 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground'
-            }
-          >
-            {category}
-          </span>
+        <CategoryChip
+          label="All"
+          active={categoryId === undefined}
+          onClick={() => setCategoryId(undefined)}
+        />
+        {categories?.map((category) => (
+          <CategoryChip
+            key={category.id}
+            label={category.name}
+            active={categoryId === category.id}
+            onClick={() => setCategoryId(category.id)}
+          />
         ))}
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-8 pb-16">
-        <div className="text-center">
-          <p className="text-sm font-semibold text-foreground">
-            No deals yet — go skarrel something.
+      <div className="flex-1 space-y-2.5 px-4 pb-4">
+        {isPending && (
+          <p className="pt-10 text-center text-xs text-muted-foreground">
+            Loading this week's deals…
           </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            The deal feed lights up here once deals are posted.
+        )}
+        {error && (
+          <p className="pt-10 text-center text-xs text-destructive">
+            Couldn't load deals — check your connection and try again.
           </p>
-        </div>
+        )}
+        {deals && deals.length === 0 && (
+          <div className="pt-14 text-center">
+            <p className="text-sm font-semibold text-foreground">
+              No deals yet — go skarrel something.
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {search || categoryId
+                ? 'Try a different search or category.'
+                : 'New specials land here every week.'}
+            </p>
+          </div>
+        )}
+        {deals?.map((deal) => <DealCard key={deal.id} deal={deal} />)}
       </div>
     </div>
+  )
+}
+
+function CategoryChip({
+  label,
+  active,
+  onClick,
+}: {
+  label: string
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={
+        active
+          ? 'flex-shrink-0 rounded-full bg-brand px-3.5 py-1.5 text-xs font-semibold text-white'
+          : 'flex-shrink-0 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground'
+      }
+    >
+      {label}
+    </button>
   )
 }

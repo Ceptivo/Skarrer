@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppSavingsRouteImport } from './routes/_app/savings'
 import { Route as AppBasketRouteImport } from './routes/_app/basket'
+import { Route as AppAdminRouteImport } from './routes/_app/admin'
 import { Route as AppAccountRouteImport } from './routes/_app/account'
 
 const LoginRoute = LoginRouteImport.update({
@@ -40,6 +41,11 @@ const AppBasketRoute = AppBasketRouteImport.update({
   path: '/basket',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminRoute = AppAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAccountRoute = AppAccountRouteImport.update({
   id: '/account',
   path: '/account',
@@ -50,12 +56,14 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/account': typeof AppAccountRoute
+  '/admin': typeof AppAdminRoute
   '/basket': typeof AppBasketRoute
   '/savings': typeof AppSavingsRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/account': typeof AppAccountRoute
+  '/admin': typeof AppAdminRoute
   '/basket': typeof AppBasketRoute
   '/savings': typeof AppSavingsRoute
   '/': typeof AppIndexRoute
@@ -65,20 +73,22 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/_app/account': typeof AppAccountRoute
+  '/_app/admin': typeof AppAdminRoute
   '/_app/basket': typeof AppBasketRoute
   '/_app/savings': typeof AppSavingsRoute
   '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/account' | '/basket' | '/savings'
+  fullPaths: '/' | '/login' | '/account' | '/admin' | '/basket' | '/savings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/account' | '/basket' | '/savings' | '/'
+  to: '/login' | '/account' | '/admin' | '/basket' | '/savings' | '/'
   id:
     | '__root__'
     | '/_app'
     | '/login'
     | '/_app/account'
+    | '/_app/admin'
     | '/_app/basket'
     | '/_app/savings'
     | '/_app/'
@@ -126,6 +136,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBasketRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/admin': {
+      id: '/_app/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AppAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/account': {
       id: '/_app/account'
       path: '/account'
@@ -138,6 +155,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAccountRoute: typeof AppAccountRoute
+  AppAdminRoute: typeof AppAdminRoute
   AppBasketRoute: typeof AppBasketRoute
   AppSavingsRoute: typeof AppSavingsRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -145,6 +163,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAccountRoute: AppAccountRoute,
+  AppAdminRoute: AppAdminRoute,
   AppBasketRoute: AppBasketRoute,
   AppSavingsRoute: AppSavingsRoute,
   AppIndexRoute: AppIndexRoute,

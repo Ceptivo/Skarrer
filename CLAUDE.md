@@ -38,7 +38,10 @@ legal constraints (POPIA/CPA), and brand voice.
 - [x] Chunk 2 — Auth + profiles (email/password, auth gate, Account screen;
       awaiting Luke's live Supabase project for a real end-to-end pass.
       2FA enforcement still an open product decision)
-- [ ] Chunk 3 — Admin deal posting (+ duplicate check) & real deal feed
+- [x] Chunk 3 — Admin deal posting (+ duplicate check) & real deal feed
+      (feed + posting form built and UI-tested live; admin posting flow
+      awaits Luke's first real deal. Reference-data migration 0002 must be
+      run in prod — retailers/categories were empty)
 - [ ] Chunk 4 — Basket + cheapest-store comparison
 - [ ] Chunk 5 — Savings tracker (events, monthly chart, YTD)
 - [ ] Later — weekly graphic, crowd accuracy, HOT badge, PayFast, leaderboard…
