@@ -42,7 +42,9 @@ legal constraints (POPIA/CPA), and brand voice.
       (feed + posting form built and UI-tested live; admin posting flow
       awaits Luke's first real deal. Reference-data migration 0002 must be
       run in prod — retailers/categories were empty)
-- [ ] Chunk 4 — Basket + cheapest-store comparison
+- [x] Chunk 4 — Basket + cheapest-store comparison (single default basket;
+      comparison logic in src/lib/comparison.ts is pure + unit-tested;
+      stores ranked by coverage then total. Multi-list UI still to come)
 - [ ] Chunk 5 — Savings tracker (events, monthly chart, YTD)
 - [ ] Later — weekly graphic, crowd accuracy, HOT badge, PayFast, leaderboard…
 
