@@ -11,6 +11,7 @@ import {
   useCreateDeal,
   useRetailers,
 } from '../../lib/deals'
+import { useProductSuggestions } from '../../lib/basket'
 import { useProfile } from '../../lib/profile'
 
 import type { DealRow, NewDeal } from '../../lib/deals'
@@ -19,6 +20,56 @@ export const Route = createFileRoute('/_app/admin')({ component: AdminScreen })
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10)
+}
+
+// Product name input with autocomplete against the canonical products table,
+// so repeat deals reuse the exact same product identity.
+function ProductNameInput({
+  value,
+  onChange,
+  className,
+}: {
+  value: string
+  onChange: (value: string) => void
+  className: string
+}) {
+  const [focused, setFocused] = useState(false)
+  const { data: suggestions } = useProductSuggestions(value)
+  const show =
+    focused &&
+    value.trim().length >= 2 &&
+    (suggestions?.length ?? 0) > 0 &&
+    !suggestions!.some((s) => s.name === value)
+
+  return (
+    <div className="relative">
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setTimeout(() => setFocused(false), 150)}
+        placeholder='e.g. "Full Cream Milk 1L"'
+        className={className}
+      />
+      {show && (
+        <div className="absolute inset-x-0 top-full z-10 mt-1 overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+          {suggestions!.map((product) => (
+            <button
+              key={product.id}
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault()
+                onChange(product.name)
+              }}
+              className="block w-full px-4 py-2.5 text-left text-sm text-card-foreground hover:bg-muted"
+            >
+              {product.name}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 function plusDaysISO(days: number) {
@@ -190,12 +241,15 @@ function AdminScreen() {
 
         <div>
           <label className={labelClass}>Product (include size)</label>
-          <input
+          <ProductNameInput
             value={form.product_name}
-            onChange={(e) => set('product_name', e.target.value)}
-            placeholder='e.g. "Full Cream Milk 1L"'
+            onChange={(v) => set('product_name', v)}
             className={inputClass}
           />
+          <p className="mt-1 px-1 text-[10px] text-muted-foreground">
+            Pick a suggestion where one exists — consistent names keep the
+            comparison and weekly basket matching reliable.
+          </p>
         </div>
 
         <div className="flex gap-3">

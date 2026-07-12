@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { ChevronDown, Search } from 'lucide-react'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { ChevronDown, ChevronRight, Search, Trophy } from 'lucide-react'
 
 import { DealCard } from '../../components/deal-card'
 import { Logo } from '../../components/logo'
 import { useActiveDeals, useCategories } from '../../lib/deals'
+import { formatRand } from '../../lib/deals'
+import { useWeeklyIndex } from '../../lib/weekly'
 
 export const Route = createFileRoute('/_app/')({ component: DealsScreen })
 
@@ -53,6 +55,8 @@ function DealsScreen() {
         ))}
       </div>
 
+      <WeeklyIndexCard />
+
       <div className="flex-1 space-y-2.5 px-4 pb-4">
         {isPending && (
           <p className="pt-10 text-center text-xs text-muted-foreground">
@@ -78,6 +82,34 @@ function DealsScreen() {
         )}
         {deals?.map((deal) => <DealCard key={deal.id} deal={deal} />)}
       </div>
+    </div>
+  )
+}
+
+function WeeklyIndexCard() {
+  const { data: index } = useWeeklyIndex()
+  if (!index?.hasData) return null
+  const winnerIdx = index.totals.findIndex((t) => t.cheapest)
+  if (winnerIdx < 0) return null
+
+  return (
+    <div className="px-4 pb-3">
+      <Link
+        to="/weekly"
+        className="flex items-center justify-between rounded-2xl bg-brand-dark p-3.5 shadow-sm"
+      >
+        <div className="flex items-center gap-2.5">
+          <Trophy size={18} className="text-coral" />
+          <div>
+            <p className="text-xs font-bold text-white">
+              Cheapest Basket This Week: {index.retailers[winnerIdx].name}{' '}
+              {formatRand(index.totals[winnerIdx].total)}
+            </p>
+            <p className="text-[10px] text-white/60">Tap for the full price table</p>
+          </div>
+        </div>
+        <ChevronRight size={15} className="text-white/70" />
+      </Link>
     </div>
   )
 }

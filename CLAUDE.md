@@ -51,7 +51,11 @@ legal constraints (POPIA/CPA), and brand voice.
 - [x] Chunk 5b — Mix & match (Luke's request): per-item store selection with
       cheapest pre-selected, per-store shopping list, combined total, own
       lock-in (multi-store events log with null cheapest_retailer_id)
-- [ ] Later — weekly graphic, crowd accuracy, HOT badge, PayFast, leaderboard…
+- [x] Chunk 6 — Cheapest Basket This Week (index_products migration 0003,
+      /weekly table screen, feed entry card) + shareable graphic generator
+      (client-side SVG/PNG faithful to the locked design; partial totals
+      annotated "N of M items"). Admin form gained product autocomplete
+- [ ] Later — crowd accuracy, HOT badge, PayFast, leaderboard…
 
 ## Known open items (from the plan, not decisions to make silently)
 
