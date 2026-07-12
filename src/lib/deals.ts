@@ -108,6 +108,22 @@ export function useActiveDeals(options: { categoryId?: string; search?: string }
   })
 }
 
+export function useDeal(dealId?: string) {
+  return useQuery({
+    queryKey: ['deal', dealId],
+    enabled: Boolean(dealId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('deals')
+        .select(DEAL_SELECT)
+        .eq('id', dealId!)
+        .single()
+      if (error) throw error
+      return data as unknown as DealRow
+    },
+  })
+}
+
 export interface NewDeal {
   retailer_id: string
   branch_id: string | null

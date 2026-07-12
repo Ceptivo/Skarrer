@@ -1,34 +1,45 @@
-import { useState } from 'react'
-import { Link, createFileRoute } from '@tanstack/react-router'
+import { useMemo, useState } from 'react'
+import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ChevronDown, ChevronRight, Search, Trophy } from 'lucide-react'
 
 import { DealCard } from '../../components/deal-card'
 import { Logo } from '../../components/logo'
 import { useActiveDeals, useCategories } from '../../lib/deals'
 import { formatRand } from '../../lib/deals'
-import {
-  useDealAccuracy,
-  useFavorites,
-  useHotProducts,
-  useToggleFavorite,
-  useVoteAccuracy,
-} from '../../lib/engagement'
+import { useFavorites, useHotProducts, useToggleFavorite } from '../../lib/engagement'
 import { useWeeklyIndex } from '../../lib/weekly'
+
+import type { DealRow } from '../../lib/deals'
 
 export const Route = createFileRoute('/_app/')({ component: DealsScreen })
 
 function DealsScreen() {
-  const [categoryId, setCategoryId] = useState<string | undefined>(undefined)
   const [search, setSearch] = useState('')
+  const searching = search.trim().length > 0
 
   const { data: categories } = useCategories()
-  const { data: deals, isPending, error } = useActiveDeals({ categoryId, search })
+  const { data: deals, isPending, error } = useActiveDeals({ search })
 
-  const { data: favorites } = useFavorites()
-  const { data: hotProducts } = useHotProducts()
-  const { data: accuracy } = useDealAccuracy(deals?.map((d) => d.id) ?? [])
-  const toggleFavorite = useToggleFavorite()
-  const voteAccuracy = useVoteAccuracy()
+  // Feed layout per Luke: vertical list of category sections, each a
+  // horizontally scrollable row of deals from every store.
+  const sections = useMemo(() => {
+    if (!deals || !categories) return undefined
+    const byCategory = new Map<string, DealRow[]>()
+    for (const deal of deals) {
+      const key = deal.category?.id ?? 'other'
+      const list = byCategory.get(key) ?? []
+      list.push(deal)
+      byCategory.set(key, list)
+    }
+    const result: Array<{ id: string; name: string; deals: DealRow[] }> = []
+    for (const category of categories) {
+      const list = byCategory.get(category.id)
+      if (list?.length) result.push({ id: category.id, name: category.name, deals: list })
+    }
+    const other = byCategory.get('other')
+    if (other?.length) result.push({ id: 'other', name: 'More deals', deals: other })
+    return result
+  }, [deals, categories])
 
   return (
     <div className="flex min-h-full flex-col">
@@ -52,68 +63,83 @@ function DealsScreen() {
         </div>
       </header>
 
-      <div className="flex gap-2 overflow-x-auto px-4 py-3">
-        <CategoryChip
-          label="All"
-          active={categoryId === undefined}
-          onClick={() => setCategoryId(undefined)}
-        />
-        {categories?.map((category) => (
-          <CategoryChip
-            key={category.id}
-            label={category.name}
-            active={categoryId === category.id}
-            onClick={() => setCategoryId(category.id)}
-          />
-        ))}
+      <div className="pt-3">
+        <WeeklyIndexCard />
       </div>
 
-      <WeeklyIndexCard />
-
-      <div className="flex-1 space-y-2.5 px-4 pb-4">
+      <div className="flex-1 pb-4">
         {isPending && (
           <p className="pt-10 text-center text-xs text-muted-foreground">
             Loading this week's deals…
           </p>
         )}
         {error && (
-          <p className="pt-10 text-center text-xs text-destructive">
+          <p className="px-4 pt-10 text-center text-xs text-destructive">
             Couldn't load deals — check your connection and try again.
           </p>
         )}
         {deals && deals.length === 0 && (
-          <div className="pt-14 text-center">
+          <div className="px-8 pt-14 text-center">
             <p className="text-sm font-semibold text-foreground">
               No deals yet — go skarrel something.
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {search || categoryId
-                ? 'Try a different search or category.'
-                : 'New specials land here every week.'}
+              {searching ? 'Try a different search.' : 'New specials land here every week.'}
             </p>
           </div>
         )}
-        {deals?.map((deal) => (
-          <DealCard
-            key={deal.id}
-            deal={deal}
-            engagement={{
-              isFav: Boolean(deal.product_id && favorites?.has(deal.product_id)),
-              isHot: Boolean(deal.product_id && hotProducts?.has(deal.product_id)),
-              accuracy: accuracy?.stats.get(deal.id),
-              myVote: accuracy?.myVotes.get(deal.id),
-              onToggleFav: () =>
-                deal.product_id &&
-                toggleFavorite.mutate({
-                  productId: deal.product_id,
-                  isFav: Boolean(favorites?.has(deal.product_id)),
-                }),
-              onVote: (isAccurate) => voteAccuracy.mutate({ dealId: deal.id, isAccurate }),
-            }}
-          />
-        ))}
+
+        {searching ? (
+          <div className="space-y-2.5 px-4">
+            {deals?.map((deal) => (
+              <FeedDealCard key={deal.id} deal={deal} />
+            ))}
+          </div>
+        ) : (
+          sections?.map((section) => (
+            <section key={section.id} className="mt-2">
+              <h2 className="px-4 pb-2 text-[13px] font-extrabold tracking-wide text-foreground">
+                {section.name}
+                <span className="ml-1.5 text-[10px] font-semibold text-muted-foreground">
+                  {section.deals.length}
+                </span>
+              </h2>
+              <div className="flex gap-2.5 overflow-x-auto px-4 pb-3">
+                {section.deals.map((deal) => (
+                  <div key={deal.id} className="w-[290px] flex-shrink-0">
+                    <FeedDealCard deal={deal} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))
+        )}
       </div>
     </div>
+  )
+}
+
+function FeedDealCard({ deal }: { deal: DealRow }) {
+  const navigate = useNavigate()
+  const { data: favorites } = useFavorites()
+  const { data: hotProducts } = useHotProducts()
+  const toggleFavorite = useToggleFavorite()
+
+  return (
+    <DealCard
+      deal={deal}
+      onOpen={() => navigate({ to: '/deal/$dealId', params: { dealId: deal.id } })}
+      engagement={{
+        isFav: Boolean(deal.product_id && favorites?.has(deal.product_id)),
+        isHot: Boolean(deal.product_id && hotProducts?.has(deal.product_id)),
+        onToggleFav: () =>
+          deal.product_id &&
+          toggleFavorite.mutate({
+            productId: deal.product_id,
+            isFav: Boolean(favorites?.has(deal.product_id)),
+          }),
+      }}
+    />
   )
 }
 
@@ -124,7 +150,7 @@ function WeeklyIndexCard() {
   if (winnerIdx < 0) return null
 
   return (
-    <div className="px-4 pb-3">
+    <div className="px-4 pb-1">
       <Link
         to="/weekly"
         className="flex items-center justify-between rounded-2xl bg-brand-dark p-3.5 shadow-sm"
@@ -142,28 +168,5 @@ function WeeklyIndexCard() {
         <ChevronRight size={15} className="text-white/70" />
       </Link>
     </div>
-  )
-}
-
-function CategoryChip({
-  label,
-  active,
-  onClick,
-}: {
-  label: string
-  active: boolean
-  onClick: () => void
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={
-        active
-          ? 'flex-shrink-0 rounded-full bg-brand px-3.5 py-1.5 text-xs font-semibold text-white'
-          : 'flex-shrink-0 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-muted-foreground'
-      }
-    >
-      {label}
-    </button>
   )
 }

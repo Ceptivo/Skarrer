@@ -17,6 +17,7 @@ import { Route as AppSavingsRouteImport } from './routes/_app/savings'
 import { Route as AppBasketRouteImport } from './routes/_app/basket'
 import { Route as AppAdminRouteImport } from './routes/_app/admin'
 import { Route as AppAccountRouteImport } from './routes/_app/account'
+import { Route as AppDealDealIdRouteImport } from './routes/_app/deal.$dealId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -57,6 +58,11 @@ const AppAccountRoute = AppAccountRouteImport.update({
   path: '/account',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDealDealIdRoute = AppDealDealIdRouteImport.update({
+  id: '/deal/$dealId',
+  path: '/deal/$dealId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/basket': typeof AppBasketRoute
   '/savings': typeof AppSavingsRoute
   '/weekly': typeof AppWeeklyRoute
+  '/deal/$dealId': typeof AppDealDealIdRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/savings': typeof AppSavingsRoute
   '/weekly': typeof AppWeeklyRoute
   '/': typeof AppIndexRoute
+  '/deal/$dealId': typeof AppDealDealIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,14 +94,29 @@ export interface FileRoutesById {
   '/_app/savings': typeof AppSavingsRoute
   '/_app/weekly': typeof AppWeeklyRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/deal/$dealId': typeof AppDealDealIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/login' | '/account' | '/admin' | '/basket' | '/savings' | '/weekly'
+    | '/'
+    | '/login'
+    | '/account'
+    | '/admin'
+    | '/basket'
+    | '/savings'
+    | '/weekly'
+    | '/deal/$dealId'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/login' | '/account' | '/admin' | '/basket' | '/savings' | '/weekly' | '/'
+    | '/login'
+    | '/account'
+    | '/admin'
+    | '/basket'
+    | '/savings'
+    | '/weekly'
+    | '/'
+    | '/deal/$dealId'
   id:
     | '__root__'
     | '/_app'
@@ -104,6 +127,7 @@ export interface FileRouteTypes {
     | '/_app/savings'
     | '/_app/weekly'
     | '/_app/'
+    | '/_app/deal/$dealId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -169,6 +193,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAccountRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/deal/$dealId': {
+      id: '/_app/deal/$dealId'
+      path: '/deal/$dealId'
+      fullPath: '/deal/$dealId'
+      preLoaderRoute: typeof AppDealDealIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -179,6 +210,7 @@ interface AppRouteChildren {
   AppSavingsRoute: typeof AppSavingsRoute
   AppWeeklyRoute: typeof AppWeeklyRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppDealDealIdRoute: typeof AppDealDealIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -188,6 +220,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSavingsRoute: AppSavingsRoute,
   AppWeeklyRoute: AppWeeklyRoute,
   AppIndexRoute: AppIndexRoute,
+  AppDealDealIdRoute: AppDealDealIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
