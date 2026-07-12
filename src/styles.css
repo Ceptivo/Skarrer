@@ -49,11 +49,18 @@
 }
 
 .dark {
-  --brand: #14b8a6;
+  /* Brand teal recalibrated for dark mode: the previous #14b8a6 was too
+     bright/saturated (reads as neon cyan) and, worse, gave white header
+     text only ~2.5:1 contrast against bg-brand — well under the 3:1 floor.
+     This value keeps the same teal hue but pulled down in
+     lightness/chroma: white-on-brand header text is ~4.3:1, and brand as
+     an icon/text accent against the near-black page background is ~4.7:1.
+     --brand-soft is darkened to match so icons on it still stand out. */
+  --brand: #0e8a7c;
   --brand-dark: #0f766e;
   --coral: #ff8f73;
   --coral-soft: #3a231c;
-  --brand-soft: #123f3a;
+  --brand-soft: #0d3330;
   --cream: #0e1513;
 
   --background: #0e1513;
@@ -62,9 +69,9 @@
   --card-foreground: #f0f4f3;
   --popover: #16201d;
   --popover-foreground: #f0f4f3;
-  --primary: #14b8a6;
+  --primary: #0e8a7c;
   --primary-foreground: #06211e;
-  --secondary: #123f3a;
+  --secondary: #0d3330;
   --secondary-foreground: #a7e5dd;
   --muted: #1c2825;
   --muted-foreground: #94a3a0;
@@ -74,7 +81,7 @@
   --destructive-foreground: #ffffff;
   --border: #263531;
   --input: #263531;
-  --ring: #14b8a6;
+  --ring: #0e8a7c;
   --chart-mark: #0ea795;
 }
 

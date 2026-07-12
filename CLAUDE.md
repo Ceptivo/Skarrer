@@ -68,6 +68,12 @@ legal constraints (POPIA/CPA), and brand voice.
       first-open onboarding (3 slides, localStorage-gated, skippable),
       real PNG/maskable icons for Add-to-Home-Screen (iOS needs PNG —
       SVG-only apple-touch-icon silently fails there)
+- [x] Chunk 8b — Dark mode brand teal recalibrated (Luke's feedback: too
+      neon/turquoise). Old value gave white header text only ~2.5:1
+      contrast (fails WCAG's 3:1 floor); new #0e8a7c keeps the same hue,
+      pulled down in lightness/chroma: header text ~4.25:1, brand-as-icon-
+      accent ~4.36:1. --brand-soft darkened to match so icons on it still
+      read (~3.23:1); --brand-dark left untouched (was already fine)
 - [ ] Later — PayFast, leaderboard, badges, referrals…
 
 ## Known open items (from the plan, not decisions to make silently)
