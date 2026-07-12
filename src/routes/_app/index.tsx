@@ -6,6 +6,13 @@ import { DealCard } from '../../components/deal-card'
 import { Logo } from '../../components/logo'
 import { useActiveDeals, useCategories } from '../../lib/deals'
 import { formatRand } from '../../lib/deals'
+import {
+  useDealAccuracy,
+  useFavorites,
+  useHotProducts,
+  useToggleFavorite,
+  useVoteAccuracy,
+} from '../../lib/engagement'
 import { useWeeklyIndex } from '../../lib/weekly'
 
 export const Route = createFileRoute('/_app/')({ component: DealsScreen })
@@ -16,6 +23,12 @@ function DealsScreen() {
 
   const { data: categories } = useCategories()
   const { data: deals, isPending, error } = useActiveDeals({ categoryId, search })
+
+  const { data: favorites } = useFavorites()
+  const { data: hotProducts } = useHotProducts()
+  const { data: accuracy } = useDealAccuracy(deals?.map((d) => d.id) ?? [])
+  const toggleFavorite = useToggleFavorite()
+  const voteAccuracy = useVoteAccuracy()
 
   return (
     <div className="flex min-h-full flex-col">
@@ -80,7 +93,25 @@ function DealsScreen() {
             </p>
           </div>
         )}
-        {deals?.map((deal) => <DealCard key={deal.id} deal={deal} />)}
+        {deals?.map((deal) => (
+          <DealCard
+            key={deal.id}
+            deal={deal}
+            engagement={{
+              isFav: Boolean(deal.product_id && favorites?.has(deal.product_id)),
+              isHot: Boolean(deal.product_id && hotProducts?.has(deal.product_id)),
+              accuracy: accuracy?.stats.get(deal.id),
+              myVote: accuracy?.myVotes.get(deal.id),
+              onToggleFav: () =>
+                deal.product_id &&
+                toggleFavorite.mutate({
+                  productId: deal.product_id,
+                  isFav: Boolean(favorites?.has(deal.product_id)),
+                }),
+              onVote: (isAccurate) => voteAccuracy.mutate({ dealId: deal.id, isAccurate }),
+            }}
+          />
+        ))}
       </div>
     </div>
   )

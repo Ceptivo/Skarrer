@@ -27,6 +27,7 @@ export interface Category {
 
 export interface DealRow {
   id: string
+  product_id: string | null
   product_name: string
   price: number
   original_price: number | null
@@ -40,7 +41,7 @@ export interface DealRow {
 }
 
 const DEAL_SELECT =
-  'id, product_name, price, original_price, is_sponsored, starts_at, expires_at, created_at, ' +
+  'id, product_id, product_name, price, original_price, is_sponsored, starts_at, expires_at, created_at, ' +
   'retailer:retailers(id, name, slug, is_live), ' +
   'branch:branches(id, name, suburb), ' +
   'category:categories(id, name, slug)'

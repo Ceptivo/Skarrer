@@ -55,7 +55,12 @@ legal constraints (POPIA/CPA), and brand voice.
       /weekly table screen, feed entry card) + shareable graphic generator
       (client-side SVG/PNG faithful to the locked design; partial totals
       annotated "N of M items"). Admin form gained product autocomplete
-- [ ] Later — crowd accuracy, HOT badge, PayFast, leaderboard…
+- [x] Chunk 7 — Crowd accuracy ("still accurate?" votes, per-deal trust
+      score, changeable), favourites hearts (migration 0004), HOT badge
+      (top 5 products with ≥3 favourites+basket-adds, usage-only), per-deal
+      share (native sheet / clipboard fallback)
+- [ ] Later — PWA polish/dark mode/onboarding, PayFast, leaderboard,
+      badges, referrals…
 
 ## Known open items (from the plan, not decisions to make silently)
 
