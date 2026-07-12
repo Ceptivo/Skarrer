@@ -1,11 +1,21 @@
 import { useState } from 'react'
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { Check, ChevronRight, LogOut, Megaphone, Pencil, User } from 'lucide-react'
+import {
+  Check,
+  ChevronRight,
+  LogOut,
+  Megaphone,
+  Moon,
+  Pencil,
+  Sun,
+  User,
+} from 'lucide-react'
 
 import { ScreenHeader } from '../../components/screen-header'
 import { useAuth } from '../../lib/auth'
 import { useProfile, useUpdateProfile } from '../../lib/profile'
 import { supabase } from '../../lib/supabase'
+import { useTheme } from '../../lib/theme'
 import { LANGUAGE_LABELS, SUBURB_LABELS } from '../../lib/types'
 
 import type { Language, Suburb } from '../../lib/types'
@@ -17,7 +27,6 @@ const comingSoon = [
   'Compare Free vs Premium',
   'Leave a tip',
   'Leaderboard settings',
-  'Dark mode',
   'Suggest a feature',
   'Delete my data',
   "What's new (changelog)",
@@ -27,6 +36,7 @@ function AccountScreen() {
   const { session } = useAuth()
   const { data: profile, isPending } = useProfile()
   const updateProfile = useUpdateProfile()
+  const { theme, toggle } = useTheme()
 
   const [editingNickname, setEditingNickname] = useState(false)
   const [nicknameDraft, setNicknameDraft] = useState('')
@@ -136,6 +146,37 @@ function AccountScreen() {
             ))}
           </select>
         </label>
+
+        <button
+          onClick={toggle}
+          className="flex w-full items-center justify-between rounded-2xl border border-border bg-card p-4"
+        >
+          <span className="flex items-center gap-2.5 text-sm font-semibold text-card-foreground">
+            <span className="rounded-full bg-brand-soft p-2">
+              {theme === 'dark' ? (
+                <Moon size={16} className="text-brand" />
+              ) : (
+                <Sun size={16} className="text-brand" />
+              )}
+            </span>
+            Dark mode
+          </span>
+          <span
+            className={
+              theme === 'dark'
+                ? 'relative h-6 w-10 rounded-full bg-brand transition-colors'
+                : 'relative h-6 w-10 rounded-full bg-muted transition-colors'
+            }
+          >
+            <span
+              className={
+                theme === 'dark'
+                  ? 'absolute top-0.5 left-[22px] size-5 rounded-full bg-white transition-all'
+                  : 'absolute top-0.5 left-0.5 size-5 rounded-full bg-white transition-all'
+              }
+            />
+          </span>
+        </button>
 
         {comingSoon.map((label) => (
           <div

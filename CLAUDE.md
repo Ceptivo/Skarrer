@@ -59,8 +59,16 @@ legal constraints (POPIA/CPA), and brand voice.
       score, changeable), favourites hearts (migration 0004), HOT badge
       (top 5 products with ≥3 favourites+basket-adds, usage-only), per-deal
       share (native sheet / clipboard fallback)
-- [ ] Later — PWA polish/dark mode/onboarding, PayFast, leaderboard,
-      badges, referrals…
+- [x] Chunk 7b — Luke's feed redesign: vertical category-row sections
+      (horizontally scrollable per category) instead of filter chips; deal
+      cards no longer carry voting — tapping a card opens /deal/$dealId
+      (full detail, add-to-basket, "Still accurate?" voting lives there)
+- [x] Chunk 8 — PWA polish: dark mode toggle (persisted, no flash-of-wrong-
+      theme via inline head script, suppressHydrationWarning on <html>),
+      first-open onboarding (3 slides, localStorage-gated, skippable),
+      real PNG/maskable icons for Add-to-Home-Screen (iOS needs PNG —
+      SVG-only apple-touch-icon silently fails there)
+- [ ] Later — PayFast, leaderboard, badges, referrals…
 
 ## Known open items (from the plan, not decisions to make silently)
 

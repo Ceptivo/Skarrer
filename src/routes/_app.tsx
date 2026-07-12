@@ -3,17 +3,21 @@ import { Navigate, Outlet, createFileRoute } from '@tanstack/react-router'
 import { Logo } from '../components/logo'
 import { TabNav } from '../components/tab-nav'
 import { useAuth } from '../lib/auth'
+import { hasSeenOnboarding } from '../lib/onboarding'
 import { isSupabaseConfigured } from '../lib/supabase'
 
 export const Route = createFileRoute('/_app')({ component: AppLayout })
 
-// Auth gate around the four tab screens: signed-out users go to /login.
+// Auth gate around the four tab screens: signed-out users go to /login,
+// first-time signed-in users see the tutorial before the tabs (Master Doc
+// §7 — a short tutorial on first open, landing on the deals feed after).
 function AppLayout() {
   const { session, loading } = useAuth()
 
   if (!isSupabaseConfigured) return <SetupNotice />
   if (loading) return <Splash />
   if (!session) return <Navigate to="/login" />
+  if (!hasSeenOnboarding()) return <Navigate to="/onboarding" />
 
   return (
     <>

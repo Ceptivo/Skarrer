@@ -51,7 +51,7 @@ function LoginScreen() {
   }
 
   return (
-    <div className="flex min-h-full flex-col bg-brand">
+    <div className="flex flex-1 flex-col bg-brand">
       <div className="flex flex-col items-center px-6 pt-16 pb-10 text-center">
         <div className="flex size-16 items-center justify-center rounded-2xl bg-white text-3xl font-extrabold tracking-tighter">
           <span className="text-brand">s</span>
