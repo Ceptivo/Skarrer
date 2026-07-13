@@ -3,12 +3,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft, Trophy } from 'lucide-react'
 
 import { formatRand } from '../../lib/deals'
-import {
-  rankedBy,
-  useLeaderboard,
-  type LeaderboardMetric,
-  type LeaderboardPeriod,
-} from '../../lib/leaderboard'
+import { rankByRandSaved, useLeaderboard, type LeaderboardPeriod } from '../../lib/leaderboard'
 import { useProfile, useUpdateProfile } from '../../lib/profile'
 
 export const Route = createFileRoute('/_app/leaderboard')({ component: LeaderboardScreen })
@@ -25,10 +20,9 @@ function LeaderboardScreen() {
   const updateProfile = useUpdateProfile()
 
   const [period, setPeriod] = useState<LeaderboardPeriod>('monthly')
-  const [metric, setMetric] = useState<LeaderboardMetric>('rand')
   const { data: rows, isPending, error } = useLeaderboard(period)
 
-  const ranked = rows ? rankedBy(rows, metric) : undefined
+  const ranked = rows ? rankByRandSaved(rows) : undefined
 
   return (
     <div className="flex min-h-full flex-col">
@@ -55,7 +49,7 @@ function LeaderboardScreen() {
           </div>
           <p className="text-sm font-bold text-foreground">See how you stack up</p>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            Join the leaderboard to compare rand saved and achievements with other
+            Join the leaderboard to see how much you've saved compared to other
             skarrelers. Off by default — you choose to join, and you can leave any
             time from Account.
           </p>
@@ -73,22 +67,7 @@ function LeaderboardScreen() {
         </div>
       ) : (
         <>
-          <div className="flex gap-2 px-4 pt-3">
-            {(['rand', 'achievements'] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMetric(m)}
-                className={
-                  metric === m
-                    ? 'flex-1 rounded-full bg-brand py-2 text-xs font-bold text-white'
-                    : 'flex-1 rounded-full border border-border bg-card py-2 text-xs font-bold text-muted-foreground'
-                }
-              >
-                {m === 'rand' ? 'Rand Saved' : 'Achievements'}
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-1.5 px-4 pt-2">
+          <div className="flex gap-1.5 px-4 pt-3">
             {periods.map((p) => (
               <button
                 key={p.id}
@@ -148,7 +127,7 @@ function LeaderboardScreen() {
                     </span>
                   </div>
                   <span className="text-sm font-extrabold text-brand">
-                    {metric === 'rand' ? formatRand(row.period_saved) : `${row.badge_count} 🏅`}
+                    {formatRand(row.period_saved)}
                   </span>
                 </div>
               )

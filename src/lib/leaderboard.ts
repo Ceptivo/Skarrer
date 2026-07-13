@@ -4,7 +4,6 @@ import { supabase } from './supabase'
 import { useAuth } from './auth'
 
 export type LeaderboardPeriod = 'weekly' | 'monthly' | 'all-time'
-export type LeaderboardMetric = 'rand' | 'achievements'
 
 export interface LeaderboardRow {
   display_name: string
@@ -58,9 +57,7 @@ export function useMyBadges() {
   })
 }
 
-// Fetches the full opted-in roster for a period once; sorting by rand vs.
-// achievements happens client-side on the same dataset (small — only
-// opted-in users — so no extra round trip per metric tab).
+// Fetches the full opted-in roster for a period, ranked by rand saved.
 export function useLeaderboard(period: LeaderboardPeriod) {
   const { session } = useAuth()
   return useQuery({
@@ -79,7 +76,8 @@ export function useLeaderboard(period: LeaderboardPeriod) {
   })
 }
 
-export function rankedBy(rows: LeaderboardRow[], metric: LeaderboardMetric): LeaderboardRow[] {
-  const key = metric === 'rand' ? 'period_saved' : 'badge_count'
-  return [...rows].sort((a, b) => b[key] - a[key] || a.display_name.localeCompare(b.display_name))
+export function rankByRandSaved(rows: LeaderboardRow[]): LeaderboardRow[] {
+  return [...rows].sort(
+    (a, b) => b.period_saved - a.period_saved || a.display_name.localeCompare(b.display_name),
+  )
 }

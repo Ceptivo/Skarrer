@@ -4,7 +4,7 @@ import { ChevronRight, Medal, Trophy, Zap } from 'lucide-react'
 import { SavingsChart } from '../../components/savings-chart'
 import { ScreenHeader } from '../../components/screen-header'
 import { formatRand } from '../../lib/deals'
-import { rankedBy, useLeaderboard, useMyBadges } from '../../lib/leaderboard'
+import { rankByRandSaved, useLeaderboard, useMyBadges } from '../../lib/leaderboard'
 import { useProfile } from '../../lib/profile'
 import { summarize, useMonthlySavings } from '../../lib/savings'
 
@@ -21,7 +21,7 @@ function SavingsScreen() {
   const { data: leaderboardRows } = useLeaderboard('all-time')
 
   const myRank = profile?.leaderboard_opt_in
-    ? rankedBy(leaderboardRows ?? [], 'rand').findIndex((r) => r.is_me) + 1
+    ? rankByRandSaved(leaderboardRows ?? []).findIndex((r) => r.is_me) + 1
     : 0
 
   const badgeList = [
