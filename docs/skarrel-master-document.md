@@ -126,7 +126,7 @@ UI voice examples: empty state — "No deals yet — go skarrel something." Savi
 
 Languages: English (default), with Zulu and Afrikaans available.
 
-Domain: skarrel.co.za appears available (no active site or registered business found) — verify and register directly via an accredited SA registrar (e.g. domains.co.za, hostafrica.co.za).
+Domain: skarrel.com purchased via GoDaddy (update from the original skarrel.co.za plan below) — bought but not yet set up/pointed anywhere.
 
 Primary logo lockup
 
@@ -228,7 +228,7 @@ Platform: web app (PWA) first — installable to the home screen, no App Store a
 
 Admin deal-posting screen: a proper simple screen/form within the app for Luke to post deals, rather than editing Supabase tables directly.
 
-Infrastructure setup (still to do): domain (skarrel.co.za) not yet registered · PayFast merchant account not yet registered (requires business/banking details) · a separate n8n instance dedicated to Skarrel, kept apart from the existing Ceptivo/Shelly Residential instance.
+Infrastructure setup (still to do): domain (skarrel.com, purchased via GoDaddy) not yet set up · PayFast merchant account not yet registered (requires business/banking details) · a separate n8n instance dedicated to Skarrel, kept apart from the existing Ceptivo/Shelly Residential instance.
 
 Retailer branch list (still to do): the specific branch names/addresses per retailer that count as "Westville/Pinetown/Upper Highway" haven't been enumerated yet — needed before deals data can be properly scoped and tagged.
 

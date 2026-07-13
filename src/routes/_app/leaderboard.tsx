@@ -9,7 +9,6 @@ import { useProfile, useUpdateProfile } from '../../lib/profile'
 export const Route = createFileRoute('/_app/leaderboard')({ component: LeaderboardScreen })
 
 const periods: { id: LeaderboardPeriod; label: string }[] = [
-  { id: 'weekly', label: 'Weekly' },
   { id: 'monthly', label: 'Monthly' },
   { id: 'all-time', label: 'All-time' },
 ]

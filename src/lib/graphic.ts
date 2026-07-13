@@ -138,7 +138,7 @@ export function buildWeeklyGraphicSVG(
     `<text x="86" y="${trustY}" font-size="16" font-weight="600" fill="rgba(255,255,255,0.85)">${esc(trustLine)}</text>`,
     `<line x1="60" y1="${dividerY}" x2="1020" y2="${dividerY}" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>`,
     `<text x="60" y="${footerY1}" font-size="28" font-weight="800" fill="#ffffff">Ska<tspan fill="#ff7a59">rr</tspan>el smart. Save more.</text>`,
-    `<text x="60" y="${footerY2}" font-size="18" fill="rgba(255,255,255,0.6)">skarrel.co.za</text>`,
+    `<text x="60" y="${footerY2}" font-size="18" fill="rgba(255,255,255,0.6)">skarrel.com</text>`,
     `</svg>`,
   )
 

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from './supabase'
 import { useAuth } from './auth'
 
-export type LeaderboardPeriod = 'weekly' | 'monthly' | 'all-time'
+export type LeaderboardPeriod = 'monthly' | 'all-time'
 
 export interface LeaderboardRow {
   display_name: string
@@ -20,15 +20,6 @@ export interface MyBadges {
 
 function periodRange(period: LeaderboardPeriod): { start: string; end: string } {
   const now = new Date()
-  if (period === 'weekly') {
-    const day = now.getDay()
-    const monday = new Date(now)
-    monday.setHours(0, 0, 0, 0)
-    monday.setDate(now.getDate() - ((day + 6) % 7))
-    const nextMonday = new Date(monday)
-    nextMonday.setDate(monday.getDate() + 7)
-    return { start: monday.toISOString(), end: nextMonday.toISOString() }
-  }
   if (period === 'monthly') {
     const start = new Date(now.getFullYear(), now.getMonth(), 1)
     const end = new Date(now.getFullYear(), now.getMonth() + 1, 1)

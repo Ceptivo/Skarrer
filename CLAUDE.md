@@ -88,10 +88,12 @@ legal constraints (POPIA/CPA), and brand voice.
 
 - Real branch list per retailer is unverified (`supabase/seed.sql` uses
   placeholders from the mockup).
-- Domain skarrel.co.za and PayFast merchant account not yet registered.
-  Luke's decision: hold PayFast build until the real merchant account
-  exists (no sandbox build in the meantime). When it does happen, the
-  ITN webhook lives in the app itself, not n8n (Luke's call).
+- Domain: Luke bought skarrel.com on GoDaddy (not skarrel.co.za as
+  originally planned) — purchased but not yet set up/pointed anywhere.
+- PayFast merchant account not yet registered. Luke's decision: hold
+  PayFast build until the real merchant account exists (no sandbox build
+  in the meantime). When it does happen, the ITN webhook lives in the
+  app itself, not n8n (Luke's call).
 - 2FA-for-all-accounts, i18n (zu/af), and launch-scope trimming are pending
   discussion with Luke.
 - Referral program needs a phone-verification provider (SMS OTP) chosen

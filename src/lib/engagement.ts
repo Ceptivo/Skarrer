@@ -134,7 +134,7 @@ export function useVoteAccuracy() {
 export async function shareDeal(deal: DealRow): Promise<'shared' | 'copied'> {
   const where = [deal.retailer?.name, deal.branch?.name].filter(Boolean).join(' ')
   const was = deal.original_price ? ` (was ${formatRand(deal.original_price)})` : ''
-  const text = `${deal.product_name} for ${formatRand(deal.price)}${was} at ${where} — spotted on Skarrel. Skarrel smart, save more! skarrel.co.za`
+  const text = `${deal.product_name} for ${formatRand(deal.price)}${was} at ${where} — spotted on Skarrel. Skarrel smart, save more! skarrel.com`
 
   if (typeof navigator !== 'undefined' && navigator.share) {
     await navigator.share({ text })
