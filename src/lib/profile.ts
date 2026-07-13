@@ -29,6 +29,8 @@ export interface ProfileUpdate {
   full_name?: string | null
   home_suburb?: Suburb | null
   language?: Language
+  leaderboard_opt_in?: boolean
+  leaderboard_show_full_name?: boolean
 }
 
 export function useUpdateProfile() {

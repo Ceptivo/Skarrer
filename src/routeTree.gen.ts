@@ -15,6 +15,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppWeeklyRouteImport } from './routes/_app/weekly'
 import { Route as AppSavingsRouteImport } from './routes/_app/savings'
+import { Route as AppLeaderboardRouteImport } from './routes/_app/leaderboard'
 import { Route as AppBasketRouteImport } from './routes/_app/basket'
 import { Route as AppAdminRouteImport } from './routes/_app/admin'
 import { Route as AppAccountRouteImport } from './routes/_app/account'
@@ -49,6 +50,11 @@ const AppSavingsRoute = AppSavingsRouteImport.update({
   path: '/savings',
   getParentRoute: () => AppRoute,
 } as any)
+const AppLeaderboardRoute = AppLeaderboardRouteImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBasketRoute = AppBasketRouteImport.update({
   id: '/basket',
   path: '/basket',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/account': typeof AppAccountRoute
   '/admin': typeof AppAdminRoute
   '/basket': typeof AppBasketRoute
+  '/leaderboard': typeof AppLeaderboardRoute
   '/savings': typeof AppSavingsRoute
   '/weekly': typeof AppWeeklyRoute
   '/deal/$dealId': typeof AppDealDealIdRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/account': typeof AppAccountRoute
   '/admin': typeof AppAdminRoute
   '/basket': typeof AppBasketRoute
+  '/leaderboard': typeof AppLeaderboardRoute
   '/savings': typeof AppSavingsRoute
   '/weekly': typeof AppWeeklyRoute
   '/': typeof AppIndexRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/_app/account': typeof AppAccountRoute
   '/_app/admin': typeof AppAdminRoute
   '/_app/basket': typeof AppBasketRoute
+  '/_app/leaderboard': typeof AppLeaderboardRoute
   '/_app/savings': typeof AppSavingsRoute
   '/_app/weekly': typeof AppWeeklyRoute
   '/_app/': typeof AppIndexRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/basket'
+    | '/leaderboard'
     | '/savings'
     | '/weekly'
     | '/deal/$dealId'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/basket'
+    | '/leaderboard'
     | '/savings'
     | '/weekly'
     | '/'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/_app/account'
     | '/_app/admin'
     | '/_app/basket'
+    | '/_app/leaderboard'
     | '/_app/savings'
     | '/_app/weekly'
     | '/_app/'
@@ -192,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSavingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/leaderboard': {
+      id: '/_app/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof AppLeaderboardRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/basket': {
       id: '/_app/basket'
       path: '/basket'
@@ -227,6 +246,7 @@ interface AppRouteChildren {
   AppAccountRoute: typeof AppAccountRoute
   AppAdminRoute: typeof AppAdminRoute
   AppBasketRoute: typeof AppBasketRoute
+  AppLeaderboardRoute: typeof AppLeaderboardRoute
   AppSavingsRoute: typeof AppSavingsRoute
   AppWeeklyRoute: typeof AppWeeklyRoute
   AppIndexRoute: typeof AppIndexRoute
@@ -237,6 +257,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAccountRoute: AppAccountRoute,
   AppAdminRoute: AppAdminRoute,
   AppBasketRoute: AppBasketRoute,
+  AppLeaderboardRoute: AppLeaderboardRoute,
   AppSavingsRoute: AppSavingsRoute,
   AppWeeklyRoute: AppWeeklyRoute,
   AppIndexRoute: AppIndexRoute,

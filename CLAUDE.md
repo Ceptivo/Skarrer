@@ -74,12 +74,27 @@ legal constraints (POPIA/CPA), and brand voice.
       pulled down in lightness/chroma: header text ~4.25:1, brand-as-icon-
       accent ~4.36:1. --brand-soft darkened to match so icons on it still
       read (~3.23:1); --brand-dark left untouched (was already fine)
-- [ ] Later — PayFast, leaderboard, badges, referrals…
+- [x] Chunk 9 — Leaderboard + achievement badges (migration 0005: two
+      security-definer SQL functions, get_my_badges/get_leaderboard —
+      verified against a scratch Postgres with opted-in/opted-out/zero-
+      savings users before shipping). 3 badges live (First R500, 5-Week
+      Streak, Top 10); Student badge deferred — needs a verification
+      method decision. Leaderboard opt-in stays off by default per ToS
+      §7a; opted-out users' totals never leak even in aggregate
+- [ ] Later — PayFast (on hold — awaiting Luke's merchant account),
+      referrals (needs a phone-verification provider decision)…
 
 ## Known open items (from the plan, not decisions to make silently)
 
 - Real branch list per retailer is unverified (`supabase/seed.sql` uses
   placeholders from the mockup).
 - Domain skarrel.co.za and PayFast merchant account not yet registered.
+  Luke's decision: hold PayFast build until the real merchant account
+  exists (no sandbox build in the meantime). When it does happen, the
+  ITN webhook lives in the app itself, not n8n (Luke's call).
 - 2FA-for-all-accounts, i18n (zu/af), and launch-scope trimming are pending
   discussion with Luke.
+- Referral program needs a phone-verification provider (SMS OTP) chosen
+  before it can be built — external dependency, not yet decided.
+- Student achievement badge needs a verification method decided (manual
+  review? domain-checked student email? self-attested?) before building.

@@ -8,6 +8,7 @@ import {
   Moon,
   Pencil,
   Sun,
+  Trophy,
   User,
 } from 'lucide-react'
 
@@ -26,7 +27,6 @@ export const Route = createFileRoute('/_app/account')({ component: AccountScreen
 const comingSoon = [
   'Compare Free vs Premium',
   'Leave a tip',
-  'Leaderboard settings',
   'Suggest a feature',
   'Delete my data',
   "What's new (changelog)",
@@ -177,6 +177,78 @@ function AccountScreen() {
             />
           </span>
         </button>
+
+        <div className="rounded-2xl border border-border bg-card p-4">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2.5 text-sm font-semibold text-card-foreground">
+              <span className="rounded-full bg-brand-soft p-2">
+                <Trophy size={16} className="text-brand" />
+              </span>
+              Leaderboard
+            </span>
+            <button
+              role="switch"
+              aria-checked={profile?.leaderboard_opt_in ?? false}
+              onClick={() =>
+                updateProfile.mutate({
+                  leaderboard_opt_in: !profile?.leaderboard_opt_in,
+                })
+              }
+              className={
+                profile?.leaderboard_opt_in
+                  ? 'relative h-6 w-10 rounded-full bg-brand transition-colors'
+                  : 'relative h-6 w-10 rounded-full bg-muted transition-colors'
+              }
+            >
+              <span
+                className={
+                  profile?.leaderboard_opt_in
+                    ? 'absolute top-0.5 left-[22px] size-5 rounded-full bg-white transition-all'
+                    : 'absolute top-0.5 left-0.5 size-5 rounded-full bg-white transition-all'
+                }
+              />
+            </button>
+          </div>
+
+          {profile?.leaderboard_opt_in && (
+            <>
+              <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+                <span className="text-xs text-muted-foreground">
+                  Show my full name instead of nickname
+                </span>
+                <button
+                  role="switch"
+                  aria-checked={profile.leaderboard_show_full_name}
+                  onClick={() =>
+                    updateProfile.mutate({
+                      leaderboard_show_full_name: !profile.leaderboard_show_full_name,
+                    })
+                  }
+                  className={
+                    profile.leaderboard_show_full_name
+                      ? 'relative h-5 w-9 rounded-full bg-brand transition-colors'
+                      : 'relative h-5 w-9 rounded-full bg-muted transition-colors'
+                  }
+                >
+                  <span
+                    className={
+                      profile.leaderboard_show_full_name
+                        ? 'absolute top-0.5 left-[18px] size-4 rounded-full bg-white transition-all'
+                        : 'absolute top-0.5 left-0.5 size-4 rounded-full bg-white transition-all'
+                    }
+                  />
+                </button>
+              </div>
+              <Link
+                to="/leaderboard"
+                className="mt-3 flex items-center justify-between border-t border-border pt-3 text-xs font-semibold text-brand"
+              >
+                View leaderboard
+                <ChevronRight size={14} />
+              </Link>
+            </>
+          )}
+        </div>
 
         {comingSoon.map((label) => (
           <div
